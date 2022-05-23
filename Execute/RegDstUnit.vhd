@@ -4,10 +4,10 @@ USE ieee.std_logic_1164.ALL;
 ENTITY RegDstUnit IS
     PORT (
         clk : IN STD_LOGIC; -- Clock used for the Swap operation (Exhange the destination);
-        Rd, RS2, RS1 : IN STD_LOGIC_VECTOR(2 DOWNTO 0)
+        Rd, RS2, RS1 : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         regDst : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
         ALUOP : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-        dst : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+        dst : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
     );
 
 END ENTITY;
@@ -37,6 +37,6 @@ BEGIN
         ELSE
         Rd WHEN RegDst = "00"
         ELSE
-        RS2 WHEN RegDst = "01"
+        RS2 WHEN RegDst = "01";
 
-    END ARCHITECTURE;
+END ARCHITECTURE;

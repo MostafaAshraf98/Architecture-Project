@@ -14,9 +14,9 @@ BEGIN
     out1 <= in0
         WHEN sel(0) = '0' AND sel(1) = '0'
         ELSE
-        in1 WHEN sel(0) = '0' AND sel(1) = '1'
+        in1 WHEN sel(0) = '1' AND sel(1) = '0'
         ELSE
-        in2 WHEN sel(0) = '1' AND sel(1) = '0'
+        in2 WHEN sel(0) = '0' AND sel(1) = '1'
         ELSE
         in3;
 END ARCHITECTURE;
