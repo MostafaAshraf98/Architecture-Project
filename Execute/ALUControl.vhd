@@ -1,9 +1,0 @@
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
-
-ENTITY ALUControl IS
-    PORT ();
-END ENTITY;
-ARCHITECTURE a_ALUControl OF ALUControl IS
-BEGIN
-END ARCHITECTURE;
