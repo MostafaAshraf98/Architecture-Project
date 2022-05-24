@@ -46,7 +46,7 @@ BEGIN
 
     END PROCESS;
     b_inverted <= NOT inB;
-    a1 : my_nadder GENERIC MAP(32) PORT MAP(inA, (OTHERS => '0'), '1', INC, carry_Inc); -- Adding 1 by using the carry.
+    a1 : my_nadder GENERIC MAP(32) PORT MAP(inB, (OTHERS => '0'), '1', INC, carry_Inc); -- Adding 1 by using the carry.
     a2 : my_nadder GENERIC MAP(32) PORT MAP(inA, b_inverted, '1', Subtraction, carry_Subtraction); -- Subtracting by using the A - B = A + (NOT B) + 1 where the 1 is added using the carry.
     a3 : my_nadder GENERIC MAP(32) PORT MAP(inA, inB, '0', Addition, carry_Addition); -- Adding by using the A + B.
     a4 : my_nadder GENERIC MAP(32) PORT MAP(inA, inB, '0', AddImmediate, carry_AddImmediate); -- Adding by using the A + Imm.
@@ -55,7 +55,7 @@ BEGIN
     PassA <= inA; -- Pass the operand A As the output result of the ALU.
     PassB <= inB; -- Pass the operand B As the output result of the ALU.
     SetCarry <= (OTHERS => '0'); -- The result of the ALU does not matter but the carry flag is set to 1.
-    NOT_Operation <= NOT(inA); -- Perform NOT operation on the operand A.
+    NOT_Operation <= NOT(inB); -- Perform NOT operation on the operand A.
     And_operation <= inA AND inB; -- Perform AND operation on the operand A and B.
 
     WITH ALUOp SELECT
