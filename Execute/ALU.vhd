@@ -5,6 +5,7 @@ USE ieee.numeric_std.ALL;
 ENTITY ALU IS
     PORT (
         clk : IN STD_LOGIC; -- Clock used for the Swap operation.
+        rst : IN STD_LOGIC; -- Reset Signal.
         inA, inB : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- ALU inputs (The operands).
         ALUOp : IN STD_LOGIC_VECTOR(3 DOWNTO 0); -- Serves as a selector for the ALU operation.
         result : OUT STD_LOGIC_VECTOR(31 DOWNTO 0); -- The output of the ALU.
@@ -29,10 +30,13 @@ ARCHITECTURE a_ALU OF ALU IS
     SIGNAL result_Sig : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL b_inverted : STD_LOGIC_VECTOR(31 DOWNTO 0);
 BEGIN
-    PROCESS (clk)
+    PROCESS (rst, clk)
     BEGIN
-        -- If it is a clk rising edge and it is swap operation, then we need to swap the operands.
-        IF (rising_edge(clk) AND ALUOp = "1001") THEN
+        IF (rst = '1') THEN
+            result_Sig <= (OTHERS => '0');
+            flags_Sig <= (OTHERS => '0');
+            -- If it is a clk rising edge and it is swap operation, then we need to swap the operands.
+        ELSIF (rising_edge(clk) AND ALUOp = "1001") THEN
             -- If it is the first swapping cycle then pass the operand A.
             IF (swap_Flag = '0') THEN
                 Swap <= inA;

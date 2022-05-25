@@ -6,6 +6,7 @@ ENTITY Execute_Unit IS
     PORT (
         ---------------------In From Buffer------------------------------------------------
         clk : IN STD_LOGIC; -- Clock used for the swapping.
+        rst : IN STD_LOGIC; -- Reset Signal.
         PC : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- Program Counter.
         RD1, RD2, Imm : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- Read Data 1, Read Data 2, Immediate.
         RS1, RS2, RD : IN STD_LOGIC_VECTOR(2 DOWNTO 0); -- Register Source 1, Register Source 2, Register Destination.
@@ -38,6 +39,7 @@ ARCHITECTURE a_Execute_Unit OF Execute_Unit IS
     COMPONENT ALU IS
         PORT (
             clk : IN STD_LOGIC; -- Clock used for the Swap operation.
+            rst : IN STD_LOGIC; -- Reset Signal.
             inA, inB : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- ALU inputs (The operands).
             ALUOp : IN STD_LOGIC_VECTOR(3 DOWNTO 0); -- Serves as a selector for the ALU operation.
             result : OUT STD_LOGIC_VECTOR(31 DOWNTO 0); -- The output of the ALU.
@@ -71,6 +73,7 @@ ARCHITECTURE a_Execute_Unit OF Execute_Unit IS
     COMPONENT RegDstUnit IS
         PORT (
             clk : IN STD_LOGIC; -- Clock used for the Swap operation (Exhange the destination);
+            rst : IN STD_LOGIC;
             Rd, RS2, RS1 : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
             regDst : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
             ALUOP : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
@@ -85,11 +88,20 @@ ARCHITECTURE a_Execute_Unit OF Execute_Unit IS
             o : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
         );
     END COMPONENT;
+    COMPONENT CCR IS
+        PORT (
+            flags_in : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+            clk : IN STD_LOGIC;
+            rst : IN STD_LOGIC;
+            flags_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
+        );
+    END COMPONENT;
 
     SIGNAL mux4_op1_out, mux4_op2_out, mux2_op2_out : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL Fwd1, Fwd2 : STD_LOGIC_VECTOR(1 DOWNTO 0);
     SIGNAL ALU_Result : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL ALU_Flags : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL CCR_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL mux4_destination_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL mux2_flags_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL mux4_jumpCond_out : STD_LOGIC_VECTOR(0 DOWNTO 0);
@@ -124,13 +136,13 @@ BEGIN
 
     a : ALU PORT MAP(
         clk => clk,
+        rst => rst,
         inA => mux4_op1_out,
         inB => mux2_op2_out,
         ALUOp => ControlSignals(17 DOWNTO 14),
         result => ALU_Result,
         flags_Out => ALU_Flags
     );
-
     f : ForwardingUnit PORT MAP(
         RS1 => RS1,
         RS2 => RS2,
@@ -145,6 +157,7 @@ BEGIN
     r : RegDstUnit GENERIC MAP(
         n => 3) PORT MAP (
         clk => clk,
+        rst => rst,
         Rd => RD,
         RS2 => RS2,
         RS1 => RS1,
@@ -160,11 +173,18 @@ BEGIN
         sel => RTISignal,
         out1 => mux2_flags_out);
 
+    c : CCR PORT MAP(
+        flags_in => mux2_flags_out,
+        clk => clk,
+        rst => rst,
+        flags_out => CCR_out
+    );
+
     m5 : mux4 GENERIC MAP(
         n => 1) PORT MAP (
-        in0 => mux2_flags_out(0 DOWNTO 0),
-        in1 => mux2_flags_out(1 DOWNTO 1),
-        in2 => mux2_flags_out(2 DOWNTO 2),
+        in0 => CCR_out(0 DOWNTO 0),
+        in1 => CCR_out(1 DOWNTO 1),
+        in2 => CCR_out(2 DOWNTO 2),
         in3 => "1",
         sel => ControlSignals(13 DOWNTO 12),
         out1 => mux4_jumpCond_out);
@@ -176,7 +196,7 @@ BEGIN
     );
 
     pc_con(19 DOWNTO 0) <= PC (19 DOWNTO 0);
-    pc_con(22 DOWNTO 20) <= mux2_flags_out;
+    pc_con(22 DOWNTO 20) <= CCR_out;
     PC_Concatenated <= pc_con;
 
     PC_Branching <= STD_LOGIC_VECTOR(signed(PC) + signed(Imm(29 DOWNTO 0) & "00"));

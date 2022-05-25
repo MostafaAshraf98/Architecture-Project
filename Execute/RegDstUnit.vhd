@@ -4,6 +4,7 @@ USE ieee.std_logic_1164.ALL;
 ENTITY RegDstUnit IS
     PORT (
         clk : IN STD_LOGIC; -- Clock used for the Swap operation (Exhange the destination);
+        rst : IN STD_LOGIC;
         Rd, RS2, RS1 : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         regDst : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
         ALUOP : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
@@ -18,8 +19,10 @@ ARCHITECTURE a_RegDstUnit OF RegDstUnit IS
 BEGIN
     PROCESS (clk)
     BEGIN
-        -- If it is a clk rising edge and it is swap operation, then we need to swap the operands.
-        IF (rising_edge(clk) AND ALUOp = "1001") THEN
+        IF (rst = '1') THEN
+            dst <= (OTHERS => '0');
+            -- If it is a clk rising edge and it is swap operation, then we need to swap the operands.
+        ELSIF (rising_edge(clk) AND ALUOp = "1001") THEN
             -- If it is the first swapping cycle then pass the operand A.
             IF (swap_Flag = '0') THEN
                 Swap <= RS2;
