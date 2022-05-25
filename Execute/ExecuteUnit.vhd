@@ -12,7 +12,7 @@ ENTITY Execute_Unit IS
         RS1, RS2, RD : IN STD_LOGIC_VECTOR(2 DOWNTO 0); -- Register Source 1, Register Source 2, Register Destination.
         ControlSignals : IN STD_LOGIC_VECTOR(23 DOWNTO 0); -- Control Signals.
 
-        ----------------------- IN From Other Stages----------------------------------------
+        ----------------------- IN From Other Stages (GLOBAL)----------------------------------------
         dst_Mem, dst_WB : IN STD_LOGIC_VECTOR(2 DOWNTO 0); -- Destination Register of the instruction in the memory stage and write back stage (used for forwarding).
         WB_MemStage, WB_WBStage : IN STD_LOGIC; -- These are the control signals that indicates whether or not we write back to the register file in the previous instructions that are currently in the memory stage and write back stage.
         ALU_DataMem, MEM_DataWB : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- ALU Output and Memory Output from the two previous instructions (used for forwarding).
@@ -28,10 +28,10 @@ ENTITY Execute_Unit IS
         outRD2 : OUT STD_LOGIC_VECTOR(31 DOWNTO 0); -- Read Data 2.
         outDestination : OUT STD_LOGIC_VECTOR(2 DOWNTO 0); -- Destination Register.
 
-        -------------------------OUT TO Other Stages-----------------------------------
+        -------------------------OUT TO Other Stages (GLOBAL)-----------------------------------
         outRD : OUT STD_LOGIC_VECTOR(2 DOWNTO 0); -- Register Destination.
-        outMemReadSig : OUT STD_LOGIC; -- Memory Read Signal.architecture
-        outSwapSig : OUT STD_LOGIC;
+        outMemReadSig : OUT STD_LOGIC; -- Memory Read Signal.
+        outSwapSig : OUT STD_LOGIC; -- Swap Signal.
         outPort : OUT STD_LOGIC_VECTOR(31 DOWNTO 0) -- Data to be written to the port.
     );
 END ENTITY;
@@ -73,11 +73,11 @@ ARCHITECTURE a_Execute_Unit OF Execute_Unit IS
     COMPONENT RegDstUnit IS
         PORT (
             clk : IN STD_LOGIC; -- Clock used for the Swap operation (Exhange the destination);
-            rst : IN STD_LOGIC;
-            Rd, RS2, RS1 : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-            regDst : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-            ALUOP : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-            dst : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
+            rst : IN STD_LOGIC; -- Reset Signal.
+            Rd, RS2, RS1 : IN STD_LOGIC_VECTOR(2 DOWNTO 0); -- RD, RS1,RS2 (Register Source and Destination).
+            regDst : IN STD_LOGIC_VECTOR(1 DOWNTO 0); -- 2 Bit Control Signal.
+            ALUOP : IN STD_LOGIC_VECTOR(3 DOWNTO 0); -- 4 Bit ALU operation Signal (Used for Swap Operation).
+            dst : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) -- The WB destination Register.
         );
     END COMPONENT;
 
@@ -90,13 +90,14 @@ ARCHITECTURE a_Execute_Unit OF Execute_Unit IS
     END COMPONENT;
     COMPONENT CCR IS
         PORT (
-            flags_in : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-            clk : IN STD_LOGIC;
-            rst : IN STD_LOGIC;
-            flags_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
+            flags_in : IN STD_LOGIC_VECTOR(2 DOWNTO 0); -- The input Flags to the CCR Register.
+            clk : IN STD_LOGIC; -- Clock.
+            rst : IN STD_LOGIC; -- Rest Signal.
+            flags_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) -- Output Flags From the CCR Register.
         );
     END COMPONENT;
 
+    -- Signals For The outputs of the internal Components.
     SIGNAL mux4_op1_out, mux4_op2_out, mux2_op2_out : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL Fwd1, Fwd2 : STD_LOGIC_VECTOR(1 DOWNTO 0);
     SIGNAL ALU_Result : STD_LOGIC_VECTOR(31 DOWNTO 0);

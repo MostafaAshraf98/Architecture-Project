@@ -4,11 +4,11 @@ USE ieee.std_logic_1164.ALL;
 ENTITY RegDstUnit IS
     PORT (
         clk : IN STD_LOGIC; -- Clock used for the Swap operation (Exhange the destination);
-        rst : IN STD_LOGIC;
-        Rd, RS2, RS1 : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-        regDst : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-        ALUOP : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-        dst : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
+        rst : IN STD_LOGIC; -- Reset Signal.
+        Rd, RS2, RS1 : IN STD_LOGIC_VECTOR(2 DOWNTO 0); -- RD, RS1,RS2 (Register Source and Destination).
+        regDst : IN STD_LOGIC_VECTOR(1 DOWNTO 0); -- 2 Bit Control Signal.
+        ALUOP : IN STD_LOGIC_VECTOR(3 DOWNTO 0); -- 4 Bit ALU operation Signal (Used for Swap Operation).
+        dst : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) -- The WB destination Register.
     );
 
 END ENTITY;

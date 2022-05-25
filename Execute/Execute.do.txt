@@ -51,7 +51,7 @@ force -freeze sim:/execute_unit/ControlSignals 16#958000 0
 force -freeze sim:/execute_unit/Imm 16#00001234 0
 run
 
-force -freeze sim:/execute_unit/ControlSignals 16#85C000 0
+force -freeze sim:/execute_unit/ControlSignals 16#81C000 0
 run
 
 force -freeze sim:/execute_unit/ControlSignals 16#160665 0

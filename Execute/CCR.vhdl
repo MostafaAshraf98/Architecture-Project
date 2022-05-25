@@ -4,10 +4,10 @@ USE ieee.numeric_std.ALL;
 
 ENTITY CCR IS
     PORT (
-        flags_in : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-        clk : IN STD_LOGIC;
-        rst : IN STD_LOGIC;
-        flags_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
+        flags_in : IN STD_LOGIC_VECTOR(2 DOWNTO 0); -- The input Flags to the CCR Register.
+        clk : IN STD_LOGIC; -- Clock.
+        rst : IN STD_LOGIC; -- Rest Signal.
+        flags_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) -- Output Flags From the CCR Register.
     );
 END ENTITY;
 
@@ -16,8 +16,11 @@ BEGIN
 
     PROCESS (rst, clk)
     BEGIN
+        -- If Reset Signal then the output is 0.
         IF (rst = '1') THEN
             flags_out <= (OTHERS => '0');
+
+            -- With every rising edge, we pass the input.
         ELSIF (rising_edge(clk)) THEN
             flags_out <= flags_in;
         END IF;
