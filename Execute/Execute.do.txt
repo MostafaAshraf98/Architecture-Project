@@ -14,15 +14,17 @@ vsim -gui work.execute_unit
 # Loading work.forwardingunit(a_forwardingunit)
 # Loading work.tristatebuffer(a_tristatebuffer)
 add wave -position insertpoint sim:/execute_unit/*
-force -freeze sim:/execute_unit/clk 1 0, 0 {50 ps} -r 100
 
+force -freeze sim:/execute_unit/clk 0 0, 1 {50 ps} -r 100
+
+force -freeze sim:/execute_unit/rst  0
 force -freeze sim:/execute_unit/PC 16#00012345 0
 force -freeze sim:/execute_unit/RD1 16#01234567 0
 force -freeze sim:/execute_unit/RD2 16#07654321 0
 force -freeze sim:/execute_unit/Imm 16#00000003 0
-force -freeze sim:/execute_unit/RS1 010 0
+force -freeze sim:/execute_unit/RS1 000 0
 force -freeze sim:/execute_unit/RS2 001 0
-force -freeze sim:/execute_unit/RD 101 0
+force -freeze sim:/execute_unit/RD 010 0
 force -freeze sim:/execute_unit/ControlSignals 16#000000 0
 force -freeze sim:/execute_unit/dst_mem 000 0
 force -freeze sim:/execute_unit/dst_WB 000 0
@@ -31,59 +33,112 @@ force -freeze sim:/execute_unit/WB_WBStage 0 0
 force -freeze sim:/execute_unit/RTISignal 0 0
 run
 
-force -freeze sim:/execute_unit/ControlSignals 16#004000 0
+force -freeze sim:/execute_unit/ControlSignals 16#000010 0
 run
 
-force -freeze sim:/execute_unit/ControlSignals 16#848000 0
+force -freeze sim:/execute_unit/ControlSignals 16#004000 0
 run
 
 force -freeze sim:/execute_unit/ControlSignals 16#84C000 0
 run
 
+force -freeze sim:/execute_unit/ControlSignals 16#848000 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#200000 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#C00000 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#800000 0
+run
+
+
+force -freeze sim:/execute_unit/ControlSignals 16#864008 0
+run
+run
+
 force -freeze sim:/execute_unit/ControlSignals 16#810000 0
-run
-
-force -freeze sim:/execute_unit/ControlSignals 16#814000 0
-force -freeze sim:/execute_unit/Imm 16#00000005 0
-run
-
-force -freeze sim:/execute_unit/ControlSignals 16#958000 0
-force -freeze sim:/execute_unit/Imm 16#00001234 0
 run
 
 force -freeze sim:/execute_unit/ControlSignals 16#81C000 0
 run
 
-force -freeze sim:/execute_unit/ControlSignals 16#160665 0
-force -freeze sim:/execute_unit/Imm 16#00000001 0
+force -freeze sim:/execute_unit/ControlSignals 16#958000 0
 run
 
-force -freeze sim:/execute_unit/ControlSignals 16#864008 0
-run
-run
+force -freeze sim:/execute_unit/ControlSignals 16#000680 0
 run
 
-force -freeze sim:/execute_unit/ControlSignals 16#128008 0
+force -freeze sim:/execute_unit/ControlSignals 16#840580 0
 run
 
-force -freeze sim:/execute_unit/dst_mem 010 0
+force -freeze sim:/execute_unit/ControlSignals 16#968180 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#958180 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#118200 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#128800 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#129800 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#12A800 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#12B800 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#128661 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#000521 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#120665 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#000523 0
+force -freeze sim:/execute_unit/RTISignal 1 0
+force -freeze sim:/execute_unit/prevFlags 111 0
+run
+force -freeze sim:/execute_unit/RTISignal 0 0
+force -freeze sim:/execute_unit/prevFlags 000 0
+
+
+force -freeze sim:/execute_unit/ControlSignals 16#000000 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#000000 0
+run
+
+force -freeze sim:/execute_unit/ControlSignals 16#000000 0
+run
+
+force -freeze sim:/execute_unit/dst_mem 000 0
 force -freeze sim:/execute_unit/WB_MemStage 1 0
 force -freeze sim:/execute_unit/ALU_DataMem 16#11111111 0
+
+force -freeze sim:/execute_unit/dst_WB 001 0
+force -freeze sim:/execute_unit/WB_WBStage 0 0
+force -freeze sim:/execute_unit/MEM_DataWB 16#22222222 0
+
 force -freeze sim:/execute_unit/ControlSignals 16#000000 0
 run
 
 force -freeze sim:/execute_unit/WB_MemStage 0 0
-force -freeze sim:/execute_unit/dst_WB 001 0
 force -freeze sim:/execute_unit/WB_WBStage 1 0
-force -freeze sim:/execute_unit/MEM_DataWB 16#11111111 0
-force -freeze sim:/execute_unit/ControlSignals 16#028000 0
 run
 
+
 force -freeze sim:/execute_unit/WB_MemStage 1 0
-force -freeze sim:/execute_unit/MEM_DataWB 16#22222222 0
+force -freeze sim:/execute_unit/WB_WBStage 1 0
 force -freeze sim:/execute_unit/ControlSignals 16#814000 0
 run
 
-force -freeze sim:/execute_unit/RTISignal 1 0
-force -freeze sim:/execute_unit/prevFlags 111 0
-run

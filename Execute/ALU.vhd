@@ -40,12 +40,9 @@ ARCHITECTURE a_ALU OF ALU IS
 BEGIN
     PROCESS (rst, clk)
     BEGIN
-        -- If rst signal is set , all the outputs of the ALU is 0.
-        IF (rst = '1') THEN
-            result_Sig <= (OTHERS => '0');
-            flags_Sig <= (OTHERS => '0');
-            -- If it is a clk rising edge and it is swap operation, then we need to swap the operands.
-        ELSIF (rising_edge(clk) AND ALUOp = "1001") THEN
+
+        -- If it is a clk rising edge and it is swap operation, then we need to swap the operands.
+        IF (rising_edge(clk) AND ALUOp = "1001") THEN
             -- If it is the first swapping cycle then pass the operand A.
             IF (swap_Flag = '0') THEN
                 Swap <= inA;

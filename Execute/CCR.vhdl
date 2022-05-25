@@ -12,19 +12,21 @@ ENTITY CCR IS
 END ENTITY;
 
 ARCHITECTURE a_CCR OF CCR IS
+    SIGNAL f : STD_LOGIC_VECTOR(2 DOWNTO 0);
 BEGIN
 
     PROCESS (rst, clk)
     BEGIN
         -- If Reset Signal then the output is 0.
         IF (rst = '1') THEN
-            flags_out <= (OTHERS => '0');
+            f <= (OTHERS => '0');
 
             -- With every rising edge, we pass the input.
         ELSIF (rising_edge(clk)) THEN
-            flags_out <= flags_in;
+            f <= flags_in;
         END IF;
 
     END PROCESS;
+    flags_out <= f;
 
 END ARCHITECTURE;

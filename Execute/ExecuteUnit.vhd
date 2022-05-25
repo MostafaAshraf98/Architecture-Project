@@ -10,7 +10,7 @@ ENTITY Execute_Unit IS
         PC : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- Program Counter.
         RD1, RD2, Imm : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- Read Data 1, Read Data 2, Immediate.
         RS1, RS2, RD : IN STD_LOGIC_VECTOR(2 DOWNTO 0); -- Register Source 1, Register Source 2, Register Destination.
-        ControlSignals : IN STD_LOGIC_VECTOR(23 DOWNTO 0); -- Control Signals.
+        ControlSignals : IN STD_LOGIC_VECTOR(24 DOWNTO 0); -- Control Signals.
 
         ----------------------- IN From Other Stages (GLOBAL)----------------------------------------
         dst_Mem, dst_WB : IN STD_LOGIC_VECTOR(2 DOWNTO 0); -- Destination Register of the instruction in the memory stage and write back stage (used for forwarding).
@@ -22,7 +22,7 @@ ENTITY Execute_Unit IS
         -------------------------OUT TO Buffer-----------------------------------
         PC_Concatenated : OUT STD_LOGIC_VECTOR(31 DOWNTO 0); -- Concatenated PC.
         PC_Branching : OUT STD_LOGIC_VECTOR(31 DOWNTO 0); -- Added to immediate PC.
-        outControlSignals : OUT STD_LOGIC_VECTOR(23 DOWNTO 0); -- Control Signals.
+        outControlSignals : OUT STD_LOGIC_VECTOR(24 DOWNTO 0); -- Control Signals.
         outJumpCondition : OUT STD_LOGIC; -- Jump Condition.
         ALUResult : OUT STD_LOGIC_VECTOR(31 DOWNTO 0); -- ALU Output.
         outRD2 : OUT STD_LOGIC_VECTOR(31 DOWNTO 0); -- Read Data 2.

@@ -19,10 +19,9 @@ ARCHITECTURE a_RegDstUnit OF RegDstUnit IS
 BEGIN
     PROCESS (clk)
     BEGIN
-        IF (rst = '1') THEN
-            dst <= (OTHERS => '0');
-            -- If it is a clk rising edge and it is swap operation, then we need to swap the operands.
-        ELSIF (rising_edge(clk) AND ALUOp = "1001") THEN
+
+        -- If it is a clk rising edge and it is swap operation, then we need to swap the operands.
+        IF (rising_edge(clk) AND ALUOp = "1001") THEN
             -- If it is the first swapping cycle then pass the operand A.
             IF (swap_Flag = '0') THEN
                 Swap <= RS2;
