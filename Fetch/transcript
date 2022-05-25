@@ -1,0 +1,270 @@
+# Compile of fetch.vhd was successful.
+do fetch.do
+# vsim -gui work.fetch 
+# Start time: 09:37:21 on May 25,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.fetch(arch_fetch)
+# Loading work.mux8(arch1)
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 100 ps  Iteration: 0  Instance: /fetch
+run
+run
+force -freeze sim:/fetch/swap 1 0
+run
+run
+run
+run
+force -freeze sim:/fetch/swap 0 0
+run
+run
+force -freeze sim:/fetch/swap 1 0
+run
+force -freeze sim:/fetch/swap 0 0
+run
+quit -sim
+# End time: 09:41:56 on May 25,2022, Elapsed time: 0:04:35
+# Errors: 0, Warnings: 3
+# Compile of fetch.vhd was successful.
+do fetch.do
+# vsim -gui work.fetch 
+# Start time: 09:42:12 on May 25,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.fetch(arch_fetch)
+# Loading work.mux8(arch1)
+run
+run
+run
+run
+quit -sim
+# End time: 09:43:03 on May 25,2022, Elapsed time: 0:00:51
+# Errors: 0, Warnings: 2
+# Compile of fetch.vhd was successful.
+vsim -gui work.fetch
+# vsim -gui work.fetch 
+# Start time: 09:44:42 on May 25,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.fetch(arch_fetch)
+# Loading work.mux8(arch1)
+quit -sim
+# End time: 09:46:35 on May 25,2022, Elapsed time: 0:01:53
+# Errors: 0, Warnings: 2
+do fetch.do
+# vsim -gui work.fetch 
+# Start time: 09:46:45 on May 25,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.fetch(arch_fetch)
+# Loading work.mux8(arch1)
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 100 ps  Iteration: 0  Instance: /fetch
+run
+quit -sim
+# End time: 09:47:18 on May 25,2022, Elapsed time: 0:00:33
+# Errors: 0, Warnings: 2
+# Compile of fetch.vhd was successful.
+do fetch.do
+# vsim -gui work.fetch 
+# Start time: 09:48:24 on May 25,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.fetch(arch_fetch)
+# Loading work.mux8(arch1)
+# ** Error: (vsim-3732) No default binding for component instance 'm1'.
+#    The following component port is not on the entity:
+#           in4
+#    Time: 0 ps  Iteration: 0  Instance: /fetch/m1 File: D:/UNI/Spring 2022 - semester 8/Computer Arch/my part/Fetch/fetch.vhd Line: 58
+# Error loading design
+# Error: Error loading design
+#        Pausing macro execution
+# MACRO ./fetch.do PAUSED at line 1
+do fetch.do
+# vsim -gui work.fetch 
+# Start time: 09:48:24 on May 25,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.fetch(arch_fetch)
+# Loading work.mux8(arch1)
+# ** Error: (vsim-3732) No default binding for component instance 'm1'.
+#    The following component port is not on the entity:
+#           in4
+#    Time: 0 ps  Iteration: 0  Instance: /fetch/m1 File: D:/UNI/Spring 2022 - semester 8/Computer Arch/my part/Fetch/fetch.vhd Line: 58
+# Error loading design
+# Error: Error loading design
+#        Pausing macro execution
+# MACRO ./fetch.do PAUSED at line 1
+# Compile of fetch.vhd was successful.
+do fetch.do
+# vsim -gui work.fetch 
+# Start time: 09:48:24 on May 25,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.fetch(arch_fetch)
+# Loading work.mux8(arch1)
+# ** Error: (vsim-3732) No default binding for component instance 'm1'.
+#    The following component port is not on the entity:
+#           in4
+#    Time: 0 ps  Iteration: 0  Instance: /fetch/m1 File: D:/UNI/Spring 2022 - semester 8/Computer Arch/my part/Fetch/fetch.vhd Line: 58
+# Error loading design
+# Error: Error loading design
+#        Pausing macro execution
+# MACRO ./fetch.do PAUSED at line 1
+# Compile of mux8x3.vhd was successful.
+# Compile of fetch.vhd was successful.
+do fetch.do
+# vsim -gui work.fetch 
+# Start time: 09:48:24 on May 25,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.fetch(arch_fetch)
+# Loading work.mux8(arch1)
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 100 ps  Iteration: 0  Instance: /fetch
+run
+run
+quit -sim
+# End time: 09:53:50 on May 25,2022, Elapsed time: 0:05:26
+# Errors: 3, Warnings: 6
+vsim -gui work.fetch
+# vsim -gui work.fetch 
+# Start time: 09:54:01 on May 25,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.fetch(arch_fetch)
+# Loading work.mux8(arch1)
+add wave -position insertpoint  \
+sim:/fetch/clk \
+sim:/fetch/branch_address \
+sim:/fetch/memory_address \
+sim:/fetch/sel_br \
+sim:/fetch/sw_int \
+sim:/fetch/swap \
+sim:/fetch/hazard \
+sim:/fetch/hlt \
+sim:/fetch/mem_in_use \
+sim:/fetch/pc_mem \
+sim:/fetch/rst \
+sim:/fetch/fetch_output \
+sim:/fetch/mux8_output \
+sim:/fetch/next_pc \
+sim:/fetch/sel_freeze \
+sim:/fetch/sel_mem \
+sim:/fetch/sel_mux8
+run
+force -freeze sim:/fetch/sel_br 0 0
+force -freeze sim:/fetch/sw_int 0 0
+force -freeze sim:/fetch/swap 0 0
+force -freeze sim:/fetch/hazard 0 0
+force -freeze sim:/fetch/hlt 0 0
+force -freeze sim:/fetch/mem_in_use 0 0
+force -freeze sim:/fetch/pc_mem 0 0
+force -freeze sim:/fetch/rst 0 0
+force -freeze sim:/fetch/clk 1 0, 0 {50 ps} -r 100
+run
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 200 ps  Iteration: 0  Instance: /fetch
+run
+quit -sim
+# End time: 09:56:37 on May 25,2022, Elapsed time: 0:02:36
+# Errors: 0, Warnings: 2
+vsim -gui work.fetch
+# vsim -gui work.fetch 
+# Start time: 09:57:33 on May 25,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.fetch(arch_fetch)
+# Loading work.mux8(arch1)
+add wave -position insertpoint  \
+sim:/fetch/clk \
+sim:/fetch/branch_address \
+sim:/fetch/memory_address \
+sim:/fetch/sel_br \
+sim:/fetch/sw_int \
+sim:/fetch/swap \
+sim:/fetch/hazard \
+sim:/fetch/hlt \
+sim:/fetch/mem_in_use \
+sim:/fetch/pc_mem \
+sim:/fetch/rst \
+sim:/fetch/fetch_output \
+sim:/fetch/mux8_output \
+sim:/fetch/next_pc \
+sim:/fetch/sel_freeze \
+sim:/fetch/sel_mem \
+sim:/fetch/sel_mux8
+force -freeze sim:/fetch/clk 1 0, 0 {50 ps} -r 100
+run
+force -freeze sim:/fetch/sel_br 0 0
+force -freeze sim:/fetch/sw_int 0 0
+force -freeze sim:/fetch/swap 0 0
+force -freeze sim:/fetch/hazard 0 0
+force -freeze sim:/fetch/hlt 0 0
+force -freeze sim:/fetch/mem_in_use 0 0
+force -freeze sim:/fetch/pc_mem 0 0
+force -freeze sim:/fetch/rst 0 0
+run
+run
+force -freeze sim:/fetch/swap 1 0
+run
+run
+force -freeze sim:/fetch/swap 0 0
+force -freeze sim:/fetch/pc_mem 1 0
+force -freeze sim:/fetch/memory_address 16#01100000 0
+run
+force -freeze sim:/fetch/pc_mem 0 0
+run
+run
+force -freeze sim:/fetch/sel_br 1 0
+force -freeze sim:/fetch/branch_address 16#00000010 0
+run
+quit -sim
+# End time: 10:01:51 on May 25,2022, Elapsed time: 0:04:18
+# Errors: 0, Warnings: 1
+do fetch.do
+# vsim -gui work.fetch 
+# Start time: 10:02:09 on May 25,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.fetch(arch_fetch)
+# Loading work.mux8(arch1)
+quit -sim
+# End time: 11:18:46 on May 25,2022, Elapsed time: 1:16:37
+# Errors: 0, Warnings: 1
+# Error opening D:/UNI/Spring 2022 - semester 8/Computer Arch/my part/Fetch/mux2x1.vhd
+# Path name 'D:/UNI/Spring 2022 - semester 8/Computer Arch/my part/Fetch/mux2x1.vhd' doesn't exist.
+do fetch.do
+# vsim -gui work.fetch 
+# Start time: 11:19:51 on May 25,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.fetch(arch_fetch)
+# Loading work.mux8(arch1)
