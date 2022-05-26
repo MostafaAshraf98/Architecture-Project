@@ -1,0 +1,18 @@
+
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.numeric_std.all;
+
+ENTITY HazardDU IS
+	PORT(
+		clk : IN std_logic;
+		MemRead : IN std_logic;
+		RS1,RS2,RD : IN  std_logic_vector(2 DOWNTO 0);
+		hazard1 : OUT std_logic;
+END ENTITY;
+
+ARCHITECTURE HazardDU OF HazardDU IS
+BEGIN		
+hazard1 <= '1' WHEN MemRead='1' and (RS1=RD or RS2=RD)
+ELSE '0';
+END HazardDU;

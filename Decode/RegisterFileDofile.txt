@@ -1,0 +1,22 @@
+vsim -gui work.registerfile
+# vsim -gui work.registerfile 
+# Start time: 22:40:40 on May 25,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.registerfile(syncrf)
+add wave sim:/registerfile/*
+force -freeze sim:/registerfile/clk 1 0, 0 {50 ps} -r 100
+force -freeze sim:/registerfile/WriteEnable 1 0
+force -freeze sim:/registerfile/WriteAdd 010 0
+force -freeze sim:/registerfile/WriteData 16#00AF 0
+run
+force -freeze sim:/registerfile/WriteAdd 100 0
+force -freeze sim:/registerfile/WriteData 16#00A0 0
+run
+force -freeze sim:/registerfile/WriteEnable 0 0
+force -freeze sim:/registerfile/WriteAdd 000 0
+force -freeze sim:/registerfile/ReadReg1 100 0
+force -freeze sim:/registerfile/ReadReg2 010 0
+run

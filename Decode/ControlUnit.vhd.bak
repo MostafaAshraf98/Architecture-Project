@@ -6,7 +6,7 @@ ENTITY ControlUnit IS
 	PORT(
 		clk,reset,INT : IN std_logic;
 		opCode  : IN std_logic_vector(5 DOWNTO 0);
-		SignalVector : OUT  std_logic_vector(23 DOWNTO 0));
+		SignalVector : OUT  std_logic_vector(24 DOWNTO 0));
 END ENTITY ControlUnit;
 
 ARCHITECTURE ControlUnit OF ControlUnit IS
@@ -29,6 +29,7 @@ ARCHITECTURE ControlUnit OF ControlUnit IS
 	SIGNAL SWInt:std_logic:='0';
 	SIGNAL RTISIg:std_logic:='0';
 	SIGNAL Flush:std_logic:='0';
+	SIGNAL HWINT:std_logic:='0';
 BEGIN
 PROCESS(opcode) IS
 BEGIN
@@ -52,6 +53,7 @@ BEGIN
 	SWInt<='0';
 	RTISIg<='0';
 	Flush<='0';
+	HWINT<='0';
 IF opCode="000000" THEN
 	RegWrite<='0';
 	InPort<='0';
@@ -208,25 +210,10 @@ ELSIF opCode="100110" then
 	RTISIg<='0';
 	Flush<='1';
 ELSIF opCode="100111" then
-	-- to be implemented
-	RegWrite<='0';
-	InPort<='0';
-	OutPort<='0';
-	RegImm<='1';
-	RegDst<="00";
-	ALUOp<="1000";
-	JmpCond<="00";
-	Branch<='0';
 	SpHeap<='1';
-	MemWrite<='0';
 	MemRead<='1';
-	MemAluToReg<='0';
-	PcRd2<='1';
 	PcMem<='1';
-	HLT<='0';
-	SWAP<='0';
-	SWInt<='1';
-	RTISIg<='0';
+	RTISIg<='1';
 	Flush<='1';
 ELSIF opCode="110000" then
 	RegWrite<='0';
@@ -250,11 +237,11 @@ ELSIF opCode="110000" then
 	Flush<='0';
 ELSIF opCode="110001" then
 	HLT<='1';
+ELSIF opCode="110010" then
+	HWINT<='1';
 
 END IF;
-end IF;
-
 end process;
-SIGNALVECTOR<= RegWrite & InPort & OutPort & RegImm & RegDst & ALUOp & JmpCond & Branch & SpHeap & MemWrite & MemRead & MemAluToReg & PcRd2 & PcMem & HLT & SWAP & SWInt & RTISIg & Flush;
+SIGNALVECTOR<= HWINT&RegWrite & InPort & OutPort & RegImm & RegDst & ALUOp & JmpCond & Branch & SpHeap & MemWrite & MemRead & MemAluToReg & PcRd2 & PcMem & HLT & SWAP & SWInt & RTISIg & Flush;
 		
 END ControlUnit;
