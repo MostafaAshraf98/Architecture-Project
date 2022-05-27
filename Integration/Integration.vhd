@@ -22,6 +22,7 @@ ARCHITECTURE a_Integration OF Integration IS
     SIGNAL DecodeSig_RS1, DecodeSig_RS2, DecodeSig_RD : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL DecodeSig_ControlSignals : STD_LOGIC_VECTOR(24 DOWNTO 0);
     SIGNAL DecodeSig_HazardSignal : STD_LOGIC;
+    SIGNAL DecodeSig_RFData1,DecodeSig_RFData2 : std_logic_vector(31 DOWNTO 0);
 
     -- OUT SIGNALS FROM EXECUTE
     SIGNAL ExecSig_PC_Concatenated : STD_LOGIC_VECTOR(31 DOWNTO 0); -- Concatenated PC.
@@ -84,6 +85,9 @@ ARCHITECTURE a_Integration OF Integration IS
     SIGNAL sigOR2_Mem : STD_LOGIC; -- Or in the corner
     SIGNAL SigOr_Mux_Fetch : STD_LOGIC_VECTOR(0 DOWNTO 0); -- result of the mux in the corner result
     SIGNAL Sig_ReadEnable : STD_LOGIC;
+    SIGNAL FLUSH : STD_LOGIC;
+    SIGNAL B1enable : STD_LOGIC;
+    
 
 BEGIN
     --------------------PORT MAPPING FETCH--------------------------
@@ -99,21 +103,21 @@ BEGIN
         mem_in_use => SelOR_mem_in_use,
         pc_mem => Buff4Sig_OUT_Control_SIGNAL(5),
         rst => rst,
-        fetch_output => FetchSig_out
+        fetch_output => FetchSig_out,
+        NextPC=>FetchSig_NextPC
         );
 
     --------------PORT MAPPING BUFFER1 IF/ID--------------------------
     -- needs signals from excute buffer and decode buffer
-    -- FB: Entity work.Buffer1_IF_ID PORTMAP (
-
-    --     clk=>clk,
-    --     enb=>,
-    --     flush =>;
-    --     pc_input => ,
-    --     inst_input =>,
-    --     pc_output =>,
-    --     inst_output=> 
-    -- );
+    FB: Entity work.Buffer1_IF_ID PORT MAP (
+        clk=>clk,
+        enb=>B1enable,
+        flush =>FLUSH,
+        pc_input => FetchSig_NextPC,
+        inst_input =>MemSig_readData,
+        pc_output =>Buff1Sig_pc_output,
+        inst_output=> Buff1Sig_inst_output
+    );
 
     -------------------PORT MAPPING DECODE----------------------
     D: Entity work.Decode PORT MAP (
@@ -127,12 +131,26 @@ BEGIN
         RD1 =>DecodeSig_RD1, 
         RD2 =>DecodeSig_RD2, 
         ImmValue =>DecodeSig_ImmValue,
+        RFData1 =>DecodeSig_RFData1,
+        RFData2 =>DecodeSig_RFData2,
         RS1 =>DecodeSig_RS1,
         RS2 =>DecodeSig_RS2, 
         RD  =>DecodeSig_RD,
         ControlSignals  =>DecodeSig_ControlSignals,
         HazardSignal  =>DecodeSig_HazardSignal);
-        
+
+        ----------REGUSTER FILE PORT MAPING
+        RF : Entity work.RegisterFile PORT MAP(
+            clk => clk,
+            ---writeback wB signal
+            WriteEnable => Buff4Sig_OUT_Control_SIGNAL(23),
+            WriteAdd => Buff4Sig_OUT_Rs2_RD_DATA, 
+            WriteData => WBSig_write_value, 
+            ReadReg1 => Buff1Sig_inst_output(25 DOWNTO 23), 
+            ReadReg2 => Buff1Sig_inst_output(22 DOWNTO 20), 
+            ReadData1 => DecodeSig_RFData1, 
+            ReadData2 => DecodeSig_RFData2);
+
 
     --------------PORT MAPPING BUFFER2 ID/EX--------------------------
     
@@ -218,5 +236,7 @@ BEGIN
     SigOR1_Mem <= Buff3Sig_OUT_ControlSignals(8) OR Buff3Sig_OUT_ControlSignals(24) OR rst;
     SigOR2_Mem <= Buff3Sig_OUT_ControlSignals(8) OR Buff3Sig_OUT_ControlSignals(9);
     Sig_ReadEnable <= SigOR1_Mem OR SigOR2_Mem;
+    FLUSH<=Buff4Sig_OUT_Control_SIGNAL(0) OR MemSig_Sel_Branch;
+    B1enable<= (rst AND Buff2Sig_OUTControlSignals(4)) OR ExecSig_outSwapSig OR DecodeSig_HazardSignal OR Buff3Sig_OUT_ControlSignals(2);
 
 END ARCHITECTURE;

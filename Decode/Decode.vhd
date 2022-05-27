@@ -11,6 +11,7 @@ ENTITY Decode IS
         InputPC : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         Instruction : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         INPORTDATA : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        RFData1,RFData2 : IN std_logic_vector(31 DOWNTO 0);
         RD1, RD2, ImmValue : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         RS1, RS2, RD : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         ControlSignals : OUT STD_LOGIC_VECTOR(24 DOWNTO 0);
@@ -18,15 +19,6 @@ ENTITY Decode IS
 END ENTITY Decode;
 
 ARCHITECTURE Decode OF Decode IS
-    COMPONENT RegisterFile IS
-        PORT (
-            clk : IN STD_LOGIC;
-            WriteEnable : IN STD_LOGIC;
-            WriteAdd, ReadReg1, ReadReg2 : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-            WriteData : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-            ReadData1, ReadData2 : OUT STD_LOGIC_VECTOR(31 DOWNTO 0));
-    END COMPONENT RegisterFile;
-
     COMPONENT ControlUnit IS
         PORT (
             clk, reset : IN STD_LOGIC;
@@ -83,21 +75,20 @@ ARCHITECTURE Decode OF Decode IS
 
 BEGIN
 
-    RF : RegisterFile PORT MAP(clk => clk, WriteEnable => '0', WriteAdd => (OTHERS => '0'), WriteData => (OTHERS => '0'), ReadReg1 => Reg1Add, ReadReg2 => Reg2Add, ReadData1 => Reg1Data, ReadData2 => Reg2Data);
     CU : ControlUnit PORT MAP(clk => clk, reset => reset, opCode => Opcode, signalVector => CONTSIG);
     -- INPORTREG: my_nDFF GENERIC MAP(32) PORT MAP(clk=>clk,Rst=>reset,en=>'0',d=>(OTHERS=>'0'),q=>INPORTDATA);
-    INPORTMUX : mux2 GENERIC MAP(32) PORT MAP(SEl => InPort, IN1 => Reg1Data, IN2 => INPORTDATA, OUT1 => RD1);
+    INPORTMUX : mux2 GENERIC MAP(32) PORT MAP(SEl => InPort, IN1 => RFData1, IN2 => INPORTDATA, OUT1 => RD1);
     HDU : HazardDU PORT MAP(clk => clk, MemRead => MemRead_EXCUTESTAGE, RS1 => Reg1Add, RS2 => Reg2Add, RD => RD_EXCUTESTAGE, hazard1 => hazardSig);
     HDUMUX : mux2 GENERIC MAP(25) PORT MAP(SEl => hazardSig, IN1 => CONTSIG, IN2 => (OTHERS => '0'), OUT1 => ControlSignals);
     InPort <= CONTSIG(22);
     Opcode <= Instruction(31 DOWNTO 26);
     Reg1Add <= Instruction(25 DOWNTO 23);
     Reg2Add <= Instruction(22 DOWNTO 20);
-    RD2 <= Reg2Data;
     ImmValue <= x"0000" & Instruction(15 DOWNTO 0);
     RS1 <= Instruction(25 DOWNTO 23);
     RS2 <= Instruction(22 DOWNTO 20);
     RD <= Instruction(19 DOWNTO 17);
+    RD2 <=RFData2;
     HazardSignal <= hazardSig;
 
 END Decode;
