@@ -296,7 +296,7 @@ BEGIN
     -------------------PORT MAPPING MULTIPLEXERS AND MEMORY-------------------
 
     -- Multiplexer Before the Memory (RAM)
-    m1 : ENTITY work.mux2 GENERIC MAP(1) PORT MAP (
+    m1 : ENTITY work.mux2 GENERIC MAP(32) PORT MAP (
         IN1 => FetchSig_out,
         IN2 => MemSig_Address,
         SEl => SelOR_mem_in_use,
