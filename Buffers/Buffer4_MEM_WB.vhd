@@ -16,7 +16,7 @@ ENTITY Buffer4_MEM_WB IS
         OUT_Rs2_RD_DATA : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         OUT_Control_SIGNAL : OUT STD_LOGIC_VECTOR(24 DOWNTO 0);
         OUT_ALU_Value : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        OUT_Memory_Data : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        OUT_Memory_Data : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
 
     );
 END ENTITY;
@@ -33,5 +33,5 @@ BEGIN
             OUT_ALU_Value <= IN_ALU_Value;
             OUT_Memory_Data <= IN_Memory_Data;
         END IF;
-    END;
-END ARCHITECTURE
+    END PROCESS;
+END ARCHITECTURE;
