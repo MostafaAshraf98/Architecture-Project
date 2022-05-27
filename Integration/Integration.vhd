@@ -22,9 +22,6 @@ ARCHITECTURE a_Integration OF Integration IS
     SIGNAL DecodeSig_RS1, DecodeSig_RS2, DecodeSig_RD : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL DecodeSig_ControlSignals : STD_LOGIC_VECTOR(24 DOWNTO 0);
     SIGNAL DecodeSig_HazardSignal : STD_LOGIC;
-    -- OUT SIGNALS FROM REGISTER FILE
-    SIGNAL DecodeSig_RFData1, DecodeSig_RFData2 : STD_LOGIC_VECTOR(31 DOWNTO 0);
-
     -- OUT SIGNALS FROM EXECUTE
     SIGNAL ExecSig_PC_Concatenated : STD_LOGIC_VECTOR(31 DOWNTO 0); -- Concatenated PC.
     SIGNAL ExecSig_PC_Branching : STD_LOGIC_VECTOR(31 DOWNTO 0); -- Added to immediate PC.
@@ -79,6 +76,8 @@ ARCHITECTURE a_Integration OF Integration IS
     SIGNAL MemSig_readAddress : STD_LOGIC_VECTOR(31 DOWNTO 0); -- Data to be read
     --OUT FROM MEMORY (RAM)
     SIGNAL MemSig_readData : STD_LOGIC_VECTOR(31 DOWNTO 0); -- Data to be read
+    -- OUT SIGNALS FROM REGISTER FILE
+    SIGNAL DecodeSig_RFData1, DecodeSig_RFData2 : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
     --OTHER SIGNALS
     SIGNAL SelOR_mem_in_use : STD_LOGIC;
@@ -323,7 +322,7 @@ BEGIN
 
     SigOR1_Mem <= Buff3Sig_OUT_ControlSignals(8) OR Buff3Sig_OUT_ControlSignals(24) OR rst;
     SigOR2_Mem <= Buff3Sig_OUT_ControlSignals(8) OR Buff3Sig_OUT_ControlSignals(9);
-    Sig_ReadEnable <= SigOR1_Mem OR SigOR2_Mem;
+    Sig_ReadEnable <= SigOR1_Mem OR SigOr_Mux_Fetch(0);
     FLUSH <= Buff4Sig_OUT_Control_SIGNAL(0) OR MemSig_Sel_Branch;
     B1enable <= (rst AND Buff2Sig_OUTControlSignals(4)) OR ExecSig_outSwapSig OR DecodeSig_HazardSignal OR Buff3Sig_OUT_ControlSignals(2);
     B2enable <= (ExecSig_outSwapSig OR Buff3Sig_OUT_ControlSignals(2));

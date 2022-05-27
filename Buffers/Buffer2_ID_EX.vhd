@@ -21,7 +21,7 @@ BEGIN
     PROCESS (clk)
     BEGIN
         IF (falling_edge(clk)) THEN
-            IF (flush = '1') THEN
+            IF (flush = '1' OR rst = '1') THEN
                 OUTControlSignals <= (OTHERS => '0');
                 OUTPC <= (OTHERS => '0');
                 OUTRD1 <= (OTHERS => '0');
@@ -30,17 +30,15 @@ BEGIN
                 OUTRS1 <= (OTHERS => '0');
                 OUTRS2 <= (OTHERS => '0');
                 OUTRD <= (OTHERS => '0');
-            ELSE
-                IF (en = '0') THEN
-                    OUTControlSignals <= INControlSignals;
-                    OUTPC <= INPC;
-                    OUTRD1 <= INRD1;
-                    OUTRD2 <= INRD2;
-                    OUTImmValue <= INImmValue;
-                    OUTRS1 <= INRS1;
-                    OUTRS2 <= INRS2;
-                    OUTRD <= INRD;
-                END IF;
+            ELSIF (en = '0') THEN
+                OUTControlSignals <= INControlSignals;
+                OUTPC <= INPC;
+                OUTRD1 <= INRD1;
+                OUTRD2 <= INRD2;
+                OUTImmValue <= INImmValue;
+                OUTRS1 <= INRS1;
+                OUTRS2 <= INRS2;
+                OUTRD <= INRD;
             END IF;
         END IF;
     END PROCESS;

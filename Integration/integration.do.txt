@@ -1,0 +1,50 @@
+vsim -gui work.integration
+# vsim -gui work.integration 
+# Start time: 18:47:25 on May 27,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.integration(a_integration)
+# Loading work.fetch(arch_fetch)
+# Loading work.mux8(arch1)
+# Loading work.buffer1_if_id(a_buffer1_if_id)
+# Loading work.decode(decode)
+# Loading work.controlunit(controlunit)
+# Loading work.mux2(arch1)
+# Loading work.hazarddu(hazarddu)
+# Loading work.registerfile(syncrf)
+# Loading work.buf(buf_arch)
+# Loading work.execute_unit(a_execute_unit)
+# Loading work.mux4(arch1)
+# Loading work.alu(a_alu)
+# Loading work.my_nadder(a_my_nadder)
+# Loading work.my_adder(a_my_adder)
+# Loading work.forwardingunit(a_forwardingunit)
+# Loading work.regdstunit(a_regdstunit)
+# Loading work.ccr(a_ccr)
+# Loading work.tristatebuffer(a_tristatebuffer)
+# Loading work.buffer3_ex_mem(a_buffer3_if_id)
+# Loading work.memory_unit(a_memory_unit)
+# Loading work.stack_pointer(a_stack_pointer)
+# Loading work.buffer4_mem_wb(a_buffer4_mem_wb)
+# Loading work.write_back(arch_wb)
+# Loading work.memory(a_memory)
+add wave -position insertpoint sim:/integration/*
+mem load -i {D:/Work/CCE/Year 3 - Senior 1/Semester 2/Arch/Project/Repo/Architecture-Project/assembler/memory.mem} /integration/mem/memory_data
+
+force -freeze sim:/integration/clk 1 0, 0 {50 ps} -r 100
+force -freeze sim:/integration/rst 1 0
+run
+
+force -freeze sim:/integration/rst 0 0
+run
+
+force -freeze sim:/integration/inPort 16#00000005 0
+run
+
+force -freeze sim:/integration/inPort 16#00000002 0
+run
+
+force -freeze sim:/integration/inPort 16#0000000 0
+run

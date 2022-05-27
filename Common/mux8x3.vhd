@@ -19,6 +19,8 @@ BEGIN
         ELSE
         in3 WHEN sel = "001"
         ELSE
+        in3 WHEN sel = "XX1"
+        ELSE
         in4 WHEN sel = "UUU"
         ELSE
         (OTHERS => 'Z');

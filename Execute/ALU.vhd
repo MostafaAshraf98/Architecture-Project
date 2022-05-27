@@ -80,7 +80,7 @@ BEGIN
         ADD2 WHEN "1000", -- Increment 2 Operation.
         Swap WHEN "1001", -- Swap operation.
         PassB WHEN "1010", -- PassB operation.
-        (OTHERS => '0') WHEN OTHERS; -- For instructions that does not use ALU.
+        (OTHERS => 'X') WHEN OTHERS; -- For instructions that does not use ALU.
 
     -- Zero Flag
     -- Zero Flag do not change if the operation is: Pass InA, Pass InB, SetCarry, Swap.
