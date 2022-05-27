@@ -5,7 +5,8 @@ ENTITY Buffer3_EX_MEM IS
     PORT (
         clk : IN STD_LOGIC;
         rst : IN STD_LOGIC;
-        enable : IN STD_LOGIC;
+        disable : IN STD_LOGIC;
+        flush : IN STD_LOGIC;
         -------------INPUTS TO Buffer From EXECUTE STAGE---------------
         IN_PC_Concatenated : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- Concatenated PC.
         IN_PC_Branching : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- Added to immediate PC.
@@ -30,7 +31,7 @@ BEGIN
 
     PROCESS (rst, clk)
     BEGIN
-        IF (rst = '1') THEN
+        IF (rst = '1' OR flush = '1') THEN
             ------------OUTPUTS From Buffer To Memory Stage
             OUT_PC_Concatenated <= (OTHERS => '0');
             OUT_PC_Branching <= (OTHERS => '0');
@@ -39,7 +40,7 @@ BEGIN
             OUT_ALUResult <= (OTHERS => '0');
             OUT_RD2 <= (OTHERS => '0');
             OUT_Destination <= (OTHERS => '0');
-        ELSIF (falling_edge(clk) AND enable = '1') THEN
+        ELSIF (falling_edge(clk) AND disable = '0') THEN
             OUT_PC_Concatenated <= IN_PC_Concatenated;
             OUT_PC_Branching <= IN_PC_Branching;
             OUT_ControlSignals <= IN_ControlSignals;
