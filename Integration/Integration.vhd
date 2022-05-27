@@ -15,14 +15,15 @@ ARCHITECTURE a_Integration OF Integration IS
 
     -- OUT SIGNALS FROM FETCH
     SIGNAL FetchSig_out : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL FetchSig_NextPC: std_logic_vector (31 DOWNTO 0);
+    SIGNAL FetchSig_NextPC : STD_LOGIC_VECTOR (31 DOWNTO 0);
 
     -- OUT SIGNALS FROM DECODE 
     SIGNAL DecodeSig_RD1, DecodeSig_RD2, DecodeSig_ImmValue : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL DecodeSig_RS1, DecodeSig_RS2, DecodeSig_RD : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL DecodeSig_ControlSignals : STD_LOGIC_VECTOR(24 DOWNTO 0);
     SIGNAL DecodeSig_HazardSignal : STD_LOGIC;
-    SIGNAL DecodeSig_RFData1,DecodeSig_RFData2 : std_logic_vector(31 DOWNTO 0);
+    -- OUT SIGNALS FROM REGISTER FILE
+    SIGNAL DecodeSig_RFData1, DecodeSig_RFData2 : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
     -- OUT SIGNALS FROM EXECUTE
     SIGNAL ExecSig_PC_Concatenated : STD_LOGIC_VECTOR(31 DOWNTO 0); -- Concatenated PC.
@@ -87,11 +88,10 @@ ARCHITECTURE a_Integration OF Integration IS
     SIGNAL Sig_ReadEnable : STD_LOGIC;
     SIGNAL FLUSH : STD_LOGIC;
     SIGNAL B1enable : STD_LOGIC;
-    
-
+    SIGNAL B2enable : STD_LOGIC;
 BEGIN
     --------------------PORT MAPPING FETCH--------------------------
-    f : ENTITY work.Fetch PORT MAP (
+    F : ENTITY work.Fetch PORT MAP (
         clk => clk,
         branch_address => Buff3Sig_OUT_PC_Branching,
         memory_address => WBSig_write_value,
@@ -104,61 +104,139 @@ BEGIN
         pc_mem => Buff4Sig_OUT_Control_SIGNAL(5),
         rst => rst,
         fetch_output => FetchSig_out,
-        NextPC=>FetchSig_NextPC
+        NextPC => FetchSig_NextPC
         );
 
     --------------PORT MAPPING BUFFER1 IF/ID--------------------------
     -- needs signals from excute buffer and decode buffer
-    FB: Entity work.Buffer1_IF_ID PORT MAP (
-        clk=>clk,
-        enb=>B1enable,
-        flush =>FLUSH,
+    BUFF1_IF_ID : ENTITY work.Buffer1_IF_ID PORT MAP (
+        clk => clk,
+        enb => B1enable,
+        flush => FLUSH,
         pc_input => FetchSig_NextPC,
-        inst_input =>MemSig_readData,
-        pc_output =>Buff1Sig_pc_output,
-        inst_output=> Buff1Sig_inst_output
-    );
+        inst_input => MemSig_readData,
+        pc_output => Buff1Sig_pc_output,
+        inst_output => Buff1Sig_inst_output
+        );
 
     -------------------PORT MAPPING DECODE----------------------
-    D: Entity work.Decode PORT MAP (
+    D : ENTITY work.Decode PORT MAP (
         clk => clk,
         reset => rst,
-        MemRead_EXCUTESTAGE =>Buff2Sig_OUTControlSignals(8),
-        RD_EXCUTESTAGE =>BUff2Sig_OUTRD,
-        InputPC =>Buff1Sig_pc_output,
-        Instruction =>Buff1Sig_inst_output,
-        INPORTDATA =>inPort,
-        RD1 =>DecodeSig_RD1, 
-        RD2 =>DecodeSig_RD2, 
-        ImmValue =>DecodeSig_ImmValue,
-        RFData1 =>DecodeSig_RFData1,
-        RFData2 =>DecodeSig_RFData2,
-        RS1 =>DecodeSig_RS1,
-        RS2 =>DecodeSig_RS2, 
-        RD  =>DecodeSig_RD,
-        ControlSignals  =>DecodeSig_ControlSignals,
-        HazardSignal  =>DecodeSig_HazardSignal);
+        MemRead_EXCUTESTAGE => Buff2Sig_OUTControlSignals(8),
+        RD_EXCUTESTAGE => BUff2Sig_OUTRD,
+        InputPC => Buff1Sig_pc_output,
+        Instruction => Buff1Sig_inst_output,
+        INPORTDATA => inPort,
+        RFData1 => DecodeSig_RFData1,
+        RFData2 => DecodeSig_RFData2,
+        RD1 => DecodeSig_RD1,
+        RD2 => DecodeSig_RD2,
+        ImmValue => DecodeSig_ImmValue,
+        RS1 => DecodeSig_RS1,
+        RS2 => DecodeSig_RS2,
+        RD => DecodeSig_RD,
+        ControlSignals => DecodeSig_ControlSignals,
+        HazardSignal => DecodeSig_HazardSignal);
 
-        ----------REGUSTER FILE PORT MAPING
-        RF : Entity work.RegisterFile PORT MAP(
-            clk => clk,
-            ---writeback wB signal
-            WriteEnable => Buff4Sig_OUT_Control_SIGNAL(23),
-            WriteAdd => Buff4Sig_OUT_Rs2_RD_DATA, 
-            WriteData => WBSig_write_value, 
-            ReadReg1 => Buff1Sig_inst_output(25 DOWNTO 23), 
-            ReadReg2 => Buff1Sig_inst_output(22 DOWNTO 20), 
-            ReadData1 => DecodeSig_RFData1, 
-            ReadData2 => DecodeSig_RFData2);
-
-
+    ----------REGISTER FILE PORT MAPING
+    RF : ENTITY work.RegisterFile PORT MAP(
+        clk => clk,
+        WriteEnable => Buff4Sig_OUT_Control_SIGNAL(23),
+        WriteAdd => Buff4Sig_OUT_Rs2_RD_DATA,
+        WriteData => WBSig_write_value,
+        ReadReg1 => Buff1Sig_inst_output(25 DOWNTO 23),
+        ReadReg2 => Buff1Sig_inst_output(22 DOWNTO 20),
+        ReadData1 => DecodeSig_RFData1,
+        ReadData2 => DecodeSig_RFData2);
     --------------PORT MAPPING BUFFER2 ID/EX--------------------------
-    
+
+    BUFF2_ID_EX : ENTITY work.buf PORT MAP (
+        rst => rst,
+        clk => clk,
+        en => B2enable,
+        flush => FLUSH,
+        INPC => FetchSig_NextPC,
+        INControlSignals => DecodeSig_ControlSignals,
+        INRD1 => DecodeSig_RD1,
+        INRD2 => DecodeSig_RD2,
+        INImmValue => DecodeSig_ImmValue,
+        INRS1 => DecodeSig_RS1,
+        INRS2 => DecodeSig_RS2,
+        INRD => DecodeSig_RD,
+        OUTControlSignals => Buff2Sig_OUTControlSignals,
+        OUTPC => Buff2Sig_OUTPC,
+        OUTRD1 => Buff2Sig_OUTRD1,
+        OUTRD2 => BUff2Sig_OUTRD2,
+        OUTImmValue => BUff2Sig_OUTImmValue,
+        OUTRS1 => Buff2Sig_OUTRS1,
+        OUTRS2 => BUff2Sig_OUTRS2,
+        OUTRD => BUff2Sig_OUTRD
+        );
 
     -------------------PORT MAPPING EXEC----------------------
+    EXEC : ENTITY work.Execute_Unit PORT MAP(
+        --In From Buffer
+        clk => clk,
+        rst => rst,
+        PC => Buff2Sig_OUTPC,
+        RD1 => Buff2Sig_OUTRD1,
+        RD2 => BUff2Sig_OUTRD2,
+        Imm => BUff2Sig_OUTImmValue,
+        RS1 => Buff2Sig_OUTRS1,
+        RS2 => BUff2Sig_OUTRS2,
+        RD => BUff2Sig_OUTRD,
+        ControlSignals => Buff2Sig_OUTControlSignals,
+
+        -- IN From Other Stages (GLOBAL)
+        dst_Mem => MemSig_out_Rs2_Rd,
+        dst_WB => Buff4Sig_OUT_Rs2_RD_DATA,
+        WB_MemStage => Buff3Sig_OUT_ControlSignals(23),
+        WB_WBStage => Buff4Sig_OUT_Control_SIGNAL(23),
+        ALU_DataMem => MemSig_out_ALU_Heap_Value,
+        MEM_DataWB => WBSig_write_value,
+        prevFlags => WBSig_write_value(22 DOWNTO 20),
+        RTISignal => Buff4Sig_OUT_Control_SIGNAL(1),
+
+        --OUT TO Buffer
+        PC_Concatenated => ExecSig_PC_Concatenated,
+        PC_Branching => ExecSig_PC_Branching,
+        outControlSignals => ExecSig_outControlSignals,
+        outJumpCondition => ExecSig_outJumpCondition,
+        ALUResult => ExecSig_ALUResult,
+        outRD2 => ExecSig_outRD2,
+        outDestination => ExecSig_outDestination,
+
+        --OUT TO Other Stages (GLOBAL)
+        outRD => ExecSig_outRD,
+        outMemReadSig => ExecSig_outMemReadSig,
+        outSwapSig => ExecSig_outSwapSig,
+        outPort => ExecSig_outPort
+        );
 
     --------------PORT MAPPING BUFFER3 EX/MEM--------------------------
-
+    BUFF3_EX_MEM : ENTITY work.Buffer3_EX_MEM PORT MAP(
+        clk => clk,
+        rst => rst,
+        disable => Buff3Sig_OUT_ControlSignals(2),
+        flush => Buff4Sig_OUT_Control_SIGNAL(0),
+        --INPUTS TO Buffer From EXECUTE STAGE
+        IN_PC_Concatenated => ExecSig_PC_Concatenated,
+        IN_PC_Branching => ExecSig_PC_Branching,
+        IN_ControlSignals => ExecSig_outControlSignals,
+        IN_JumpCondition => ExecSig_outJumpCondition,
+        IN_ALUResult => ExecSig_ALUResult,
+        IN_RD2 => ExecSig_outRD2,
+        IN_Destination => ExecSig_outDestination,
+        --OUTPUTS From Buffer To Memory Stage
+        OUT_PC_Concatenated => Buff3Sig_OUT_PC_Concatenated,
+        OUT_PC_Branching => Buff3Sig_OUT_PC_Branching,
+        OUT_ControlSignals => Buff3Sig_OUT_ControlSignals,
+        OUT_JumpCondition => Buff3Sig_OUT_JumpCondition,
+        OUT_ALUResult => Buff3Sig_OUT_ALUResult,
+        OUT_RD2 => Buff3Sig_OUT_RD2,
+        OUT_Destination => Buff3Sig_OUT_Destination
+        );
     -------------------PORT MAPPING MEMORY UNIT-------------------
     memUnit : ENTITY work.Memory_Unit PORT MAP(
         -- In from Global input
@@ -207,7 +285,17 @@ BEGIN
         OUT_Memory_Data => Buff4Sig_OUT_Memory_Data
         );
     -------------------PORT MAPPING WB UNIT-------------------
-    --------------------- Multiplexer Before the Memory (RAM)------------------------------
+    WB : ENTITY work.write_back PORT MAP(
+        alu => Buff4Sig_OUT_ALU_Value,
+        memory => Buff4Sig_OUT_Memory_Data,
+        rst => rst,
+        hw_int => Buff4Sig_OUT_Control_SIGNAL(24),
+        mem_alu_to_reg => Buff4Sig_OUT_Control_SIGNAL(7),
+        write_value => WBSig_write_value
+        );
+    -------------------PORT MAPPING MULTIPLEXERS AND MEMORY-------------------
+
+    -- Multiplexer Before the Memory (RAM)
     m1 : ENTITY work.mux2 GENERIC MAP(1) PORT MAP (
         IN1 => FetchSig_out,
         IN2 => MemSig_Address,
@@ -230,13 +318,16 @@ BEGIN
         writeData => MemSig_Write_Data,
         readData => MemSig_readData
         );
-
+    ------------------------------------------OTHER GATES AND CONNECTIONS----------------------------------------------------
     SelOR_mem_in_use <= Buff3Sig_OUT_ControlSignals(8) OR Buff3Sig_OUT_ControlSignals(9);
 
     SigOR1_Mem <= Buff3Sig_OUT_ControlSignals(8) OR Buff3Sig_OUT_ControlSignals(24) OR rst;
     SigOR2_Mem <= Buff3Sig_OUT_ControlSignals(8) OR Buff3Sig_OUT_ControlSignals(9);
     Sig_ReadEnable <= SigOR1_Mem OR SigOR2_Mem;
-    FLUSH<=Buff4Sig_OUT_Control_SIGNAL(0) OR MemSig_Sel_Branch;
-    B1enable<= (rst AND Buff2Sig_OUTControlSignals(4)) OR ExecSig_outSwapSig OR DecodeSig_HazardSignal OR Buff3Sig_OUT_ControlSignals(2);
+    FLUSH <= Buff4Sig_OUT_Control_SIGNAL(0) OR MemSig_Sel_Branch;
+    B1enable <= (rst AND Buff2Sig_OUTControlSignals(4)) OR ExecSig_outSwapSig OR DecodeSig_HazardSignal OR Buff3Sig_OUT_ControlSignals(2);
+    B2enable <= (ExecSig_outSwapSig OR Buff3Sig_OUT_ControlSignals(2));
+
+    outPort <= ExecSig_outPort;
 
 END ARCHITECTURE;
