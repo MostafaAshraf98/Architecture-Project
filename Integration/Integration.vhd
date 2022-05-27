@@ -150,7 +150,7 @@ BEGIN
         IN_Rs2_RD_DATA => MemSig_out_Rs2_Rd,
         IN_Control_SIGNAL => MemSig_out_Control_Signals,
         IN_ALU_Value => MemSig_out_ALU_Heap_Value,
-        IN_Memory_Data => MemSig_Write_Data,
+        IN_Memory_Data => MemSig_readData,
 
         ----OUT To Write Back----
         OUT_Rs2_RD_DATA => Buff4Sig_OUT_Rs2_RD_DATA,
