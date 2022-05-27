@@ -7,7 +7,8 @@ ENTITY Fetch IS
         clk : IN std_logic;
         branch_address, memory_address : IN std_logic_vector (31 DOWNTO 0);
         sel_br, sw_int, swap, hazard, hlt, mem_in_use, pc_mem, rst : In std_logic;
-        fetch_output : INOUT std_logic_vector (31 DOWNTO 0)
+        fetch_output : INOUT std_logic_vector (31 DOWNTO 0);
+        NextPC: OUT std_logic_vector (31 DOWNTO 0)
 		);
 END ENTITY Fetch;
 
@@ -42,7 +43,7 @@ process(clk)
         mux8_output <= fetch_output;
     end if;
     end process; 
-
+    NextPC <= next_pc;
 
     sel_freeze <= sw_int or swap or hazard or mem_in_use or hlt;
     sel_mem <= pc_mem or rst;

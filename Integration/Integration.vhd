@@ -15,6 +15,7 @@ ARCHITECTURE a_Integration OF Integration IS
 
     -- OUT SIGNALS FROM FETCH
     SIGNAL FetchSig_out : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL FetchSig_NextPC: std_logic_vector (31 DOWNTO 0);
 
     -- OUT SIGNALS FROM DECODE 
     SIGNAL DecodeSig_RD1, DecodeSig_RD2, DecodeSig_ImmValue : STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -48,7 +49,7 @@ ARCHITECTURE a_Integration OF Integration IS
     SIGNAL WBSig_write_value : STD_LOGIC_VECTOR (31 DOWNTO 0);
 
     --OUT FROM BUFFER 1
-    SIGNAL Buff1Sig_pc_output : STD_LOGIC_VECTOR (19 DOWNTO 0);
+    SIGNAL Buff1Sig_pc_output : STD_LOGIC_VECTOR (31 DOWNTO 0);
     SIGNAL Buff1Sig_inst_output : STD_LOGIC_VECTOR (31 DOWNTO 0);
 
     -- OUT FROM BUFFER 2
@@ -102,10 +103,39 @@ BEGIN
         );
 
     --------------PORT MAPPING BUFFER1 IF/ID--------------------------
+    -- needs signals from excute buffer and decode buffer
+    -- FB: Entity work.Buffer1_IF_ID PORTMAP (
+
+    --     clk=>clk,
+    --     enb=>,
+    --     flush =>;
+    --     pc_input => ,
+    --     inst_input =>,
+    --     pc_output =>,
+    --     inst_output=> 
+    -- );
 
     -------------------PORT MAPPING DECODE----------------------
+    D: Entity work.Decode PORT MAP (
+        clk => clk,
+        reset => rst,
+        MemRead_EXCUTESTAGE =>Buff2Sig_OUTControlSignals(8),
+        RD_EXCUTESTAGE =>BUff2Sig_OUTRD,
+        InputPC =>Buff1Sig_pc_output,
+        Instruction =>Buff1Sig_inst_output,
+        INPORTDATA =>inPort,
+        RD1 =>DecodeSig_RD1, 
+        RD2 =>DecodeSig_RD2, 
+        ImmValue =>DecodeSig_ImmValue,
+        RS1 =>DecodeSig_RS1,
+        RS2 =>DecodeSig_RS2, 
+        RD  =>DecodeSig_RD,
+        ControlSignals  =>DecodeSig_ControlSignals,
+        HazardSignal  =>DecodeSig_HazardSignal);
+        
 
     --------------PORT MAPPING BUFFER2 ID/EX--------------------------
+    
 
     -------------------PORT MAPPING EXEC----------------------
 
