@@ -26,7 +26,7 @@ ARCHITECTURE a_ALU OF ALU IS
     END COMPONENT;
 
     -- Signals for the result of all the ALU operations (We have a total of 11 ALU operation).
-    SIGNAL PassA, INC, SetCarry, NOT_Operation, Subtraction, Addition, AddImmediate, AND_Operation, ADD2, Swap, PassB : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL PassA, INC, SetCarry, NOT_Operation, Subtraction, Addition, AddImmediate, AND_Operation, ADD2, Swap, PassB : STD_LOGIC_VECTOR(31 DOWNTO 0) := (OTHERS => 'X');
     -- Signals for the carry flag Result of the arithmetic operations only (We have total of 5 arithmetic operations). 
     SIGNAL carry_Inc, carry_Subtraction, carry_Addition, carry_AddImmediate, carry_ADD2 : STD_LOGIC := '0';
     -- Signal holding the resulting output flag of this ALU operation. -- Initially the output flags from the operation is "000".``
@@ -64,7 +64,7 @@ BEGIN
 
     PassA <= inA; -- Pass the operand A As the output result of the ALU.
     PassB <= inB; -- Pass the operand B As the output result of the ALU.
-    SetCarry <= (OTHERS => '0'); -- The result of the ALU does not matter but the carry flag is set to 1.
+    SetCarry <= (OTHERS => 'X'); -- The result of the ALU does not matter but the carry flag is set to 1.
     NOT_Operation <= NOT(inB); -- Perform NOT operation on the operand A.
     And_operation <= inA AND inB; -- Perform AND operation on the operand A and B.
 

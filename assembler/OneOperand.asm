@@ -15,8 +15,8 @@ A0
 250
 
 .ORG A0
-SETC           #C --> 1
 NOP            #No change
+SETC           #C --> 1
 IN R1	       #R1= 5,add 5 on the in port,flags no change	
 IN R2          #R2= 10,add 10 on the in port, flags no change
 NOT R1         #R1 =FFFFFFFF , C--> no change, N --> 1, Z --> 0
