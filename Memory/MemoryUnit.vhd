@@ -7,7 +7,7 @@ ENTITY Memory_Unit IS
         -- In from Global input
         rst, clk : IN STD_LOGIC; -- Reset from global
         Interrupt : IN STD_LOGIC; -- Interrupt from Global
-        Control_Signals : IN STD_LOGIC_VECTOR(23 DOWNTO 0); -- Control Signals.
+        Control_Signals : IN STD_LOGIC_VECTOR(24 DOWNTO 0); -- Control Signals.
 
         -- In From  EX/MEM
         PC_Concat : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -20,9 +20,10 @@ ENTITY Memory_Unit IS
         -- Out to Global
         Sel_Branch : OUT STD_LOGIC; -- Select Branch to Fetcher
         out_ALU_Heap_Value : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        out_PC_Branch : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
 
         -- OUT to MEM/WB
-        out_Control_Signals : OUT STD_LOGIC_VECTOR(23 DOWNTO 0); -- Control Signals.
+        out_Control_Signals : OUT STD_LOGIC_VECTOR(24 DOWNTO 0); -- Control Signals.
         out_Rs2_Rd : OUT STD_LOGIC_VECTOR(2 DOWNTO 0); -- W
 
         --Out to memory itself
@@ -137,5 +138,6 @@ BEGIN
     out_Control_Signals <= Control_Signals;
     out_Rs2_Rd <= Rs2_Rd;
     out_ALU_Heap_Value <= ALU_Heap_Value;
+    out_PC_Branch <= PC_Branch;
     Sel_Branch <= in_Jump_Condition AND Control_Signals(11); -- pass the Selector for Branch by anding the Branch Signal with the jump condition
 END ARCHITECTURE;

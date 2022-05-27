@@ -53,24 +53,30 @@ def mcode(tokens):
         binary = opcodes[tokens[0]]
         rs = opcodes[tokens[2]]
         rdst = opcodes[tokens[1]]
+        op1 = (binary + rs ). ljust(12, 'X')
         offset = '{:016b}'.format (int(tokens[3],16))
-        op = binary + rs + rdst + offset
+        op = (op1 + rdst).ljust(16, 'X') + offset
     elif tokens[0] == "LDM" :
         binary = opcodes[tokens[0]]
         rdst = opcodes[tokens[1]]
+        op1 = binary.ljust(12, 'X')
+        op2 =op1 + rdst
+        op3 = op2.ljust(16, 'X')
         offset = '{:016b}'.format (int(tokens[2],16))
-        op1 = binary.ljust(9 , 'X')
-        op = op1 + rdst + offset
+        
+        op = op3 + offset
     elif tokens[0] == "JZ" or tokens[0] == "JN" or tokens[0] == "JC" or tokens[0] == "JMP" or tokens[0] == "CALL" or tokens[0] == "INT": 
         binary = opcodes[tokens[0]]
+        op1 = binary.ljust(16, 'X')
         offset = '{:016b}'.format (int(tokens[1],16))
-        op = binary + offset
+        op = op1 + offset
     elif tokens[0] == "STD" or tokens[0] == "LDD":
         binary = opcodes[tokens[0]]
         rs = opcodes[tokens[3]]
+        op1 = (binary + rs).ljust(12, 'X')
         rdst = opcodes[tokens[1]]
         offset = '{:016b}'.format (int(tokens[2],16))
-        op = binary + rs + rdst + offset
+        op = (op1 + rdst).ljust(16, 'X') + offset
 
 
 
