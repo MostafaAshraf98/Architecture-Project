@@ -8,11 +8,12 @@ ENTITY Decode IS
         reset	: IN STD_LOGIC;
         MemRead_EXCUTESTAGE	: IN STD_LOGIC;
         RD_EXCUTESTAGE	: IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-	InputPC : IN std_logic_vector(31 DOWNTO 0);
-	Instruction : IN std_logic_vector(31 DOWNTO 0);
-	RD1,RD2,ImmValue : OUT  std_logic_vector(31 DOWNTO 0);
-	RS1,RS2,RD : OUT  std_logic_vector(2 DOWNTO 0);
-	ControlSignals  : OUT  std_logic_vector(24 DOWNTO 0);
+	    InputPC : IN std_logic_vector(31 DOWNTO 0);
+	    Instruction : IN std_logic_vector(31 DOWNTO 0);
+        INPORTDATA: IN std_logic_vector(31 DOWNTO 0);
+	    RD1,RD2,ImmValue : OUT  std_logic_vector(31 DOWNTO 0);
+	    RS1,RS2,RD : OUT  std_logic_vector(2 DOWNTO 0);
+	    ControlSignals  : OUT  std_logic_vector(24 DOWNTO 0);
         HazardSignal : OUT std_logic);
 END ENTITY Decode;
 
@@ -60,7 +61,6 @@ SIGNAL Reg1Add:std_logic_vector(2 DOWNTO 0);
 SIGNAL Reg2Add:std_logic_vector(2 DOWNTO 0);
 SIGNAL Reg1Data:std_logic_vector(31 DOWNTO 0);
 SIGNAL Reg2Data:std_logic_vector(31 DOWNTO 0);
-SIGNAL INPORTDATA:std_logic_vector(31 DOWNTO 0);
 SIGNAL CONTSIG:std_logic_vector(24 DOWNTO 0);
 
 -----------------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ SIGNAL hazardSig:std_logic:='0';
 
     RF: RegisterFile PORT MAP(clk => clk,WriteEnable => '0',WriteAdd => (OTHERS=>'0'),WriteData => (OTHERS=>'0'),ReadReg1 => Reg1Add,ReadReg2 => Reg2Add,ReadData1 => Reg1Data,ReadData2 => Reg2Data);
     CU: ControlUnit PORT MAP(clk=>clk,reset=>reset,opCode=>Opcode, signalVector=>CONTSIG);
-    INPORTREG: my_nDFF GENERIC MAP(32) PORT MAP(clk=>clk,Rst=>reset,en=>'0',d=>(OTHERS=>'0'),q=>INPORTDATA);
+    -- INPORTREG: my_nDFF GENERIC MAP(32) PORT MAP(clk=>clk,Rst=>reset,en=>'0',d=>(OTHERS=>'0'),q=>INPORTDATA);
     INPORTMUX: mux2 GENERIC MAP(32) PORT MAP(SEl=>InPort,IN1=>Reg1Data ,IN2=>INPORTDATA,OUT1=>RD1);
     HDU: HazardDU PORT MAP(clk=>clk,MemRead=>MemRead_EXCUTESTAGE,RS1=>Reg1Add,RS2=>Reg2Add,RD=>RD_EXCUTESTAGE,hazard1=>hazardSig);
     HDUMUX: mux2 GENERIC MAP(25) PORT MAP(SEl=>hazardSig,IN1=>CONTSIG,IN2=>(OTHERS=>'0'),OUT1=>ControlSignals);

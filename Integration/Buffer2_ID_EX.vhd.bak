@@ -11,8 +11,8 @@ INRD1,INRD2,INImmValue : IN  std_logic_vector(31 DOWNTO 0);
 INRS1,INRS2,INRD : IN  std_logic_vector(2 DOWNTO 0);
 OUTControlSignals  : OUT  std_logic_vector(24 DOWNTO 0);
 OUTPC : OUT std_logic_vector(31 DOWNTO 0);
-OUTRD1,OUTRD2,OUTImmValue : OUT  std_logic_vector(31 DOWNTO 0);
-OUTRS1,OUTRS2,OUTRD : OUT  std_logic_vector(2 DOWNTO 0));
+OUTRD1,OUTRD2,OUTImmValue : IN  std_logic_vector(31 DOWNTO 0);
+OUTRS1,OUTRS2,OUTRD : IN  std_logic_vector(2 DOWNTO 0));
 
 end entity;
 
@@ -20,7 +20,7 @@ Architecture buf_arch of buf is
 begin
 Process( clk)
 begin
-    if(falling_edge(clk)) THEN
+    if(rising_edge(clk)) THEN
     if(flush= '1') THEN
     OUTControlSignals <= (others=>'0');
     OUTPC <= (others=>'0');
