@@ -1,0 +1,22 @@
+vsim -gui work.decode
+# vsim -gui work.decode 
+# Start time: 17:23:35 on May 26,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.decode(decode)
+# Loading work.registerfile(syncrf)
+# Loading work.controlunit(controlunit)
+# Loading work.my_ndff(a_my_ndff)
+# Loading work.mux2(arch1)
+# Loading work.hazarddu(hazarddu)
+add wave sim:/decode/*
+force -freeze sim:/decode/clk 1 0, 0 {50 ps} -r 100
+force -freeze sim:/decode/MemRead_EXCUTESTAGE 0 0
+force -freeze sim:/decode/InputPC 16#A00F0B00 0
+mem load -filltype value -filldata 00000101000111000011100000000000 -fillradix symbolic /decode/RF/RegFile(4)
+mem load -filltype value -filldata {0AB0F500 } -fillradix hexadecimal /decode/RF/RegFile(1)
+force -freeze sim:/decode/Instruction 00011100110000000000000000000000 0
+run
+
