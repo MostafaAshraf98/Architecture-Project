@@ -1,6 +1,3 @@
-from lib2to3.pgen2 import token
-from ntpath import join
-import opcode
 import sys
 import re
 
