@@ -48,8 +48,8 @@ def mcode(tokens):
         op = binary + rs1 + rs2 + rdst
     elif tokens[0] == "IADD":
         binary = opcodes[tokens[0]]
-        rs = opcodes[tokens[1]]
-        rdst = opcodes[tokens[2]]
+        rs = opcodes[tokens[2]]
+        rdst = opcodes[tokens[1]]
         op1 = (binary + rs). ljust(12, '0')
         offset = '{:016b}'.format(int(tokens[3], 16))
         op = (op1 + rdst).ljust(16, '0') + offset
