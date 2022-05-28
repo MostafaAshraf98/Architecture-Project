@@ -39,6 +39,8 @@ BEGIN
         ELSE
         Rd WHEN RegDst = "00"
         ELSE
-        RS2 WHEN RegDst = "01";
+        RS2 WHEN RegDst = "01"
+        ELSE
+        RS1 WHEN RegDst = "10";
 
 END ARCHITECTURE;
