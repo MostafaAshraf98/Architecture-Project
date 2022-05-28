@@ -19,15 +19,8 @@ mem load -filltype value -filldata 00000101000111000011100000000000 -fillradix s
 mem load -filltype value -filldata {0AB0F500 } -fillradix hexadecimal /decode/RF/RegFile(1)
 force -freeze sim:/decode/Instruction 00011100110000000000000000000000 0
 run
+force -freeze sim:/decode/RD_EXCUTESTAGE 100 0
+# Compile of Decode.vhd was successful.
 run
-
-
+force -freeze sim:/decode/MemRead_EXCUTESTAGE 1 0
 run
-force -freeze sim:/decode/RFData1 16#AB357 0
-force -freeze sim:/decode/RFData2 16#7683 0
-run
-force -freeze sim:/decode/INPORTDATA 16#673281 0
-force -freeze sim:/decode/Instruction 00010000000000000000000000000000 0
-run
-
-

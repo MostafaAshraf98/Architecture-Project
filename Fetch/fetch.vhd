@@ -20,6 +20,7 @@ ARCHITECTURE arch_fetch OF Fetch IS
             out1 : OUT STD_LOGIC_VECTOR(n - 1 DOWNTO 0));
     END COMPONENT;
 
+
     SIGNAL mux8_output : STD_LOGIC_VECTOR (31 DOWNTO 0) := (OTHERS => '0');
     SIGNAL next_pc : STD_LOGIC_VECTOR (31 DOWNTO 0);
     SIGNAL sel_freeze, sel_mem : STD_LOGIC;
@@ -30,11 +31,10 @@ BEGIN
 
     PROCESS (clk)
     BEGIN
-        IF (rising_edge(clk)) THEN
+        IF (falling_edge(clk)) THEN
             next_pc <= STD_LOGIC_VECTOR(to_unsigned(to_integer(unsigned(MUXOUT)) + 1, 32));
         END IF;
     END PROCESS;
-
     fetch_output <= MUXOUT;
     NextPC <= next_pc;
 

@@ -27,7 +27,10 @@ BEGIN
         END IF;
     END PROCESS;
 
-    readData <= memory_data(to_integer(unsigned(address))) WHEN readEnable = '1' ELSE
-        (OTHERS => 'Z');
+    ----readData <= memory_data(to_integer(unsigned(address))) WHEN readEnable = '1' AND to_integer(unsigned(address))<= 1048575 ELSE
+    ---    (OTHERS => 'Z');
+	readData <= (OTHERS => 'Z') WHEN to_integer(unsigned(address))> 1048575 
+	ELSE memory_data(to_integer(unsigned(address))) WHEN readEnable = '1'
+	ELSE (OTHERS => 'Z');
 
 END a_Memory;

@@ -17,7 +17,8 @@ ARCHITECTURE a_Buffer1_IF_ID OF Buffer1_IF_ID IS
 BEGIN
     PROCESS (clk)
     BEGIN
-        IF (falling_edge(clk) AND enb = '0') THEN
+	IF (falling_edge(clk)) THEN
+        IF (enb = '0') THEN
             pc_output <= pc_input;
             inst_output <= inst_input;
         ELSIF flush = '1' THEN
@@ -25,6 +26,7 @@ BEGIN
             inst_output <= (OTHERS => '0');
 
         END IF;
+	END IF;
     END PROCESS;
 
 END ARCHITECTURE;

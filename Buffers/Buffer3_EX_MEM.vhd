@@ -31,6 +31,7 @@ BEGIN
 
     PROCESS (rst, clk)
     BEGIN
+	IF(falling_edge(clk)) THEN
         IF (rst = '1' OR flush = '1') THEN
             ------------OUTPUTS From Buffer To Memory Stage
             OUT_PC_Concatenated <= (OTHERS => '0');
@@ -40,7 +41,7 @@ BEGIN
             OUT_ALUResult <= (OTHERS => '0');
             OUT_RD2 <= (OTHERS => '0');
             OUT_Destination <= (OTHERS => '0');
-        ELSIF (falling_edge(clk) AND disable = '0') THEN
+        ELSIF (disable = '0') THEN
             OUT_PC_Concatenated <= IN_PC_Concatenated;
             OUT_PC_Branching <= IN_PC_Branching;
             OUT_ControlSignals <= IN_ControlSignals;
@@ -49,6 +50,7 @@ BEGIN
             OUT_RD2 <= IN_RD2;
             OUT_Destination <= IN_Destination;
         END IF;
+	END IF;
     END PROCESS;
 
 END ARCHITECTURE;

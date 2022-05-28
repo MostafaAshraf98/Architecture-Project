@@ -1,0 +1,26 @@
+vsim -gui work.hazarddu
+# vsim -gui work.hazarddu 
+# Start time: 02:46:15 on May 26,2022
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.hazarddu(hazarddu)
+add wave sim:/hazarddu/*
+# ** Warning: (vsim-WLF-5000) WLF file currently in use: vsim.wlf
+#           File in use by: Nada  Hostname: LAPTOP-TPL0K9S8  ProcessID: 32264
+#           Attempting to use alternate WLF file "./wlftk3h3wh".
+# ** Warning: (vsim-WLF-5001) Could not open WLF file: vsim.wlf
+#           Using alternate file: ./wlftk3h3wh
+force -freeze sim:/hazarddu/RS1 010 0
+force -freeze sim:/hazarddu/RS2 100 0
+force -freeze sim:/hazarddu/RD 010 0
+force -freeze sim:/hazarddu/MemRead 1 0
+run
+force -freeze sim:/hazarddu/RD 100 0
+run
+force -freeze sim:/hazarddu/MemRead 0 0
+run
+force -freeze sim:/hazarddu/RD 001 0
+force -freeze sim:/hazarddu/MemRead 1 0
+run

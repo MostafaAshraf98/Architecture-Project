@@ -43,6 +43,7 @@ ARCHITECTURE a_Integration OF Integration IS
     SIGNAL MemSig_out_Rs2_Rd : STD_LOGIC_VECTOR(2 DOWNTO 0); -- W
     SIGNAL MemSig_Address : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL MemSig_Write_Data : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL MemSig_OUTReset : STD_LOGIC;
 
     -- OUT SIGNALS FROM WB
     SIGNAL WBSig_write_value : STD_LOGIC_VECTOR (31 DOWNTO 0);
@@ -71,6 +72,7 @@ ARCHITECTURE a_Integration OF Integration IS
     SIGNAL Buff4Sig_OUT_Control_SIGNAL : STD_LOGIC_VECTOR(24 DOWNTO 0);
     SIGNAL Buff4Sig_OUT_ALU_Value : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL Buff4Sig_OUT_Memory_Data : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL Buff4Sig_OUT_reset : STD_LOGIC;
 
     --IN TO MEMORY (RAM)
     SIGNAL MemSig_readAddress : STD_LOGIC_VECTOR(31 DOWNTO 0); -- Data to be read
@@ -101,7 +103,7 @@ BEGIN
         hlt => Buff2Sig_OUTControlSignals(4),
         mem_in_use => SelOR_mem_in_use,
         pc_mem => Buff4Sig_OUT_Control_SIGNAL(5),
-        rst => rst,
+        rst => Buff4Sig_OUT_reset,
         fetch_output => FetchSig_out,
         NextPC => FetchSig_NextPC
         );
@@ -258,6 +260,7 @@ BEGIN
         out_PC_Branch => MemSig_out_PC_Branch,
 
         -- OUT to MEM/WB
+        OUTReset => MemSig_OUTReset,
         out_Control_Signals => MemSig_out_Control_Signals,
         out_Rs2_Rd => MemSig_out_Rs2_Rd,
 
@@ -276,8 +279,9 @@ BEGIN
         IN_Control_SIGNAL => MemSig_out_Control_Signals,
         IN_ALU_Value => MemSig_out_ALU_Heap_Value,
         IN_Memory_Data => MemSig_readData,
-
+        IN_MEM_RESET => MemSig_OUTReset,
         ----OUT To Write Back----
+        OUT_MEM_RESET=>Buff4Sig_OUT_reset,
         OUT_Rs2_RD_DATA => Buff4Sig_OUT_Rs2_RD_DATA,
         OUT_Control_SIGNAL => Buff4Sig_OUT_Control_SIGNAL,
         OUT_ALU_Value => Buff4Sig_OUT_ALU_Value,
@@ -287,7 +291,8 @@ BEGIN
     WB : ENTITY work.write_back PORT MAP(
         alu => Buff4Sig_OUT_ALU_Value,
         memory => Buff4Sig_OUT_Memory_Data,
-        rst => rst,
+        rst => Buff4Sig_OUT_reset,
+	    clk=>clk,
         hw_int => Buff4Sig_OUT_Control_SIGNAL(24),
         mem_alu_to_reg => Buff4Sig_OUT_Control_SIGNAL(7),
         write_value => WBSig_write_value
@@ -318,7 +323,7 @@ BEGIN
         readData => MemSig_readData
         );
     ------------------------------------------OTHER GATES AND CONNECTIONS----------------------------------------------------
-    SelOR_mem_in_use <= Buff3Sig_OUT_ControlSignals(8) OR Buff3Sig_OUT_ControlSignals(9);
+    SelOR_mem_in_use <= SigOR1_Mem OR Buff3Sig_OUT_ControlSignals(9);
 
     SigOR1_Mem <= Buff3Sig_OUT_ControlSignals(8) OR Buff3Sig_OUT_ControlSignals(24) OR rst;
     SigOR2_Mem <= Buff3Sig_OUT_ControlSignals(8) OR Buff3Sig_OUT_ControlSignals(9);

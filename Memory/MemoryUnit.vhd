@@ -23,6 +23,7 @@ ENTITY Memory_Unit IS
         out_PC_Branch : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
 
         -- OUT to MEM/WB
+        OUTReset : OUT STD_LOGIC; -- we propagate the reset to fetch
         out_Control_Signals : OUT STD_LOGIC_VECTOR(24 DOWNTO 0); -- Control Signals.
         out_Rs2_Rd : OUT STD_LOGIC_VECTOR(2 DOWNTO 0); -- W
 
@@ -132,7 +133,7 @@ BEGIN
         out1 => addressOutVal
 
     );
-
+    OUTReset<=rst;
     Write_Data <= writeDataOutValue;
     Address <= addressOutVal;
     out_Control_Signals <= Control_Signals;
