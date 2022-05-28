@@ -31,38 +31,22 @@ vsim -gui work.integration
 # Loading work.write_back(arch_wb)
 # Loading work.memory(a_memory)
 add wave sim:/integration/*
-# ** Warning: (vsim-WLF-5000) WLF file currently in use: vsim.wlf
-#           File in use by: Nada  Hostname: LAPTOP-TPL0K9S8  ProcessID: 32264
-#           Attempting to use alternate WLF file "./wlftc9knwt".
-# ** Warning: (vsim-WLF-5001) Could not open WLF file: vsim.wlf
-#           Using alternate file: ./wlftc9knwt
 mem load -i {D:/CCE/Semester 8/Computer Architecture/Project/Architecture-Project/assembler/memory.mem} /integration/mem/memory_data
 force -freeze sim:/integration/clk 1 0, 0 {50 ps} -r 100
 force -freeze sim:/integration/rst 1 0
 run
-# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
-#    Time: 0 ps  Iteration: 0  Instance: /integration/EXEC/a
-# ** Warning: NUMERIC_STD."=": metavalue detected, returning FALSE
-#    Time: 0 ps  Iteration: 0  Instance: /integration/EXEC/a
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 0 ps  Iteration: 0  Instance: /integration/RF
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 0 ps  Iteration: 0  Instance: /integration/RF
-# ** Warning: NUMERIC_STD."=": metavalue detected, returning FALSE
-#    Time: 0 ps  Iteration: 1  Instance: /integration/EXEC/a
-# ** Warning: NUMERIC_STD."<": metavalue detected, returning FALSE
-#    Time: 0 ps  Iteration: 1  Instance: /integration/EXEC/a
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 0 ps  Iteration: 2  Instance: /integration/mem
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 0 ps  Iteration: 5  Instance: /integration/mem
+
 
 force -freeze sim:/integration/rst 0 0
 
 force -freeze sim:/integration/inPort 16#00000005 0
 run
-
-force -freeze sim:/integration/inPort 16#00000002 0
+run
+run
+run
+run
+run
+force -freeze sim:/integration/inPort 16#00000010 0
 run
 
 force -freeze sim:/integration/inPort 16#0000000 0

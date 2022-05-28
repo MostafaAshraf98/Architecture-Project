@@ -100,7 +100,7 @@ ELSIF opCode="001001" then
 ELSIF opCode="010000" then
 	RegWrite<='1';
 	RegImm<='1';
-	RegDst<="01";
+	RegDst<="10";
 	ALUOp<="0110";
 
 ELSIF opCode="010001" then

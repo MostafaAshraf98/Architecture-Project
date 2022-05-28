@@ -14,12 +14,12 @@ END ENTITY RegisterFile;
 ARCHITECTURE syncRF OF RegisterFile IS
 
 	TYPE RF_type IS ARRAY(0 TO 7) OF std_logic_vector(31 DOWNTO 0);
-	SIGNAL RegFile : RF_type ;
+	SIGNAL RegFile : RF_type :=((OTHERS=>'0'),(OTHERS=>'0'),(OTHERS=>'0'),(OTHERS=>'0'),(OTHERS=>'0'),(OTHERS=>'0'),(OTHERS=>'0'),(OTHERS=>'0'));
 	
 	BEGIN
 		PROCESS(clk) IS
 			BEGIN
-				IF falling_edge(clk) THEN  
+				IF rising_edge(clk) THEN  
 					IF WriteEnable = '1' THEN
 						RegFile(to_integer(unsigned(WriteAdd))) <= WriteData;
 					END IF;

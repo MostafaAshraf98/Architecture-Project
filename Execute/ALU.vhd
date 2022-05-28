@@ -100,7 +100,7 @@ ELSE
 
     -- Carry flag
     -- Carry flag does not change if the operation is PassA, PassB, swap and =0 when   Not, And.
-    flags_Sig(2) <= flags_Sig(2) WHEN (ALUOp = "0000" OR ALUOp = "1010" OR ALUOp = "1001")
+    flags_Sig(2) <= flags_Sig(2) WHEN (ALUOp = "0000" OR ALUOp = "1010" OR ALUOp = "1001" OR ALUOp = "0111" OR ALUOp = "0011")
 ELSE
     '1' WHEN ALUOp = "0001" -- Set Carry operation.
 ELSE

@@ -292,7 +292,6 @@ BEGIN
         alu => Buff4Sig_OUT_ALU_Value,
         memory => Buff4Sig_OUT_Memory_Data,
         rst => Buff4Sig_OUT_reset,
-	    clk=>clk,
         hw_int => Buff4Sig_OUT_Control_SIGNAL(24),
         mem_alu_to_reg => Buff4Sig_OUT_Control_SIGNAL(7),
         write_value => WBSig_write_value

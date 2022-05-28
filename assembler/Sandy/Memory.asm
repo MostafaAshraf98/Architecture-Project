@@ -38,5 +38,5 @@ LDD R3,201(R5)   #R3=19
 LDD R4,200(R5)   #R4=5
 
 #Only for teams implementing exceptions
-POP R3  #exception
-ADD R1, R2, R3 #should not execute as their is an exception
+#POP R3  #exception
+#ADD R1, R2, R3 #should not execute as their is an exception
