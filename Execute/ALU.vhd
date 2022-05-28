@@ -33,6 +33,8 @@ ARCHITECTURE a_ALU OF ALU IS
     SIGNAL flags_Sig : STD_LOGIC_VECTOR(2 DOWNTO 0) := "000";
     -- Swap operation takes 2 cycles , this flag determine which cycle we are at.
     SIGNAL swap_Flag : STD_LOGIC := '0';
+    -- The operand of the swap operation.
+    SIGNAL swap_RD2 : STD_LOGIC_VECTOR(31 DOWNTO 0);
     -- Signal holding the final result of this ALU operation.
     SIGNAL result_Sig : STD_LOGIC_VECTOR(31 DOWNTO 0);
     -- Signal holding (NOT B) , Used for the subtraction operation.
@@ -45,11 +47,12 @@ BEGIN
         IF (rising_edge(clk) AND ALUOp = "1001") THEN
             -- If it is the first swapping cycle then pass the operand A.
             IF (swap_Flag = '0') THEN
+                swap_RD2 <= inB;
                 Swap <= inA;
                 swap_Flag <= '1';
                 -- Else the pass the operand B.
             ELSE
-                Swap <= inB;
+                Swap <= swap_RD2;
                 swap_Flag <= '0';
             END IF;
         END IF;
