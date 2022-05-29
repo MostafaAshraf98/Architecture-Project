@@ -159,6 +159,7 @@ BEGIN
     BUFF2_ID_EX : ENTITY work.buf PORT MAP (
         rst => rst,
         clk => clk,
+        Hazard=>DecodeSig_HazardSignal,
         en => B2enable,
         flush => FLUSH,
         INPC => FetchSig_NextPC,

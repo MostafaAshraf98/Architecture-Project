@@ -206,7 +206,7 @@ BEGIN
     outControlSignals <= ControlSignals;
     outJumpCondition <= mux4_jumpCond_out(0);
     ALUResult <= ALU_Result;
-    outRD2 <= RD2;
+    outRD2 <= mux4_op2_out;
     outDestination <= mux4_destination_out;
     outRD <= RD;
     outMemReadSig <= ControlSignals(8);

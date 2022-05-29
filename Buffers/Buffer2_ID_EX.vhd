@@ -4,7 +4,7 @@ USE ieee.std_logic_1164.ALL;
 ENTITY buf IS
 
     PORT (
-        rst, clk, en, flush, Preset : IN STD_LOGIC;
+        rst, clk, en, flush, Preset, hazard : IN STD_LOGIC;
         INPC : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         INControlSignals : IN STD_LOGIC_VECTOR(24 DOWNTO 0);
         INRD1, INRD2, INImmValue : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -30,7 +30,7 @@ BEGIN
             Enableflag:='0';
         END IF;
         IF (falling_edge(clk)) THEN
-            IF (flush = '1' OR rst = '1') THEN
+            IF (flush = '1' OR rst = '1' OR hazard = '1') THEN
                 OUTControlSignals <= (OTHERS => '0');
                 OUTPC <= (OTHERS => '0');
                 OUTRD1 <= (OTHERS => '0');

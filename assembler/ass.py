@@ -70,7 +70,7 @@ def mcode(tokens):
     elif tokens[0] == "STD" or tokens[0] == "LDD":
         binary = opcodes[tokens[0]]
         rs = opcodes[tokens[3]]
-        op1 = (binary + rs).ljust(12, '0')
+        op1 = (binary + rs)
         rdst = opcodes[tokens[1]]
         offset = '{:016b}'.format(int(tokens[2], 16))
         op = (op1 + rdst).ljust(16, '0') + offset

@@ -23,7 +23,7 @@ BEGIN
     PROCESS (clk, rst)
     BEGIN
         IF rst = '1' THEN
-            SP_temp <= X"000FFFFE"; -- Initialize SP to 0x000FFFFE which is the last address in the memory
+            SP_temp <= X"000FFFFF"; -- Initialize SP to 0x000FFFFE which is the last address in the memory
         ELSIF rising_edge(clk) THEN
             IF writeEnable = '1' THEN
                 SP_temp <= new_SP;

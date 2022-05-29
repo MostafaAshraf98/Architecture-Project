@@ -23,6 +23,7 @@ ARCHITECTURE arch_fetch OF Fetch IS
 
     SIGNAL mux8_output : STD_LOGIC_VECTOR (31 DOWNTO 0) := (OTHERS => '0');
     SIGNAL next_pc : STD_LOGIC_VECTOR (31 DOWNTO 0);
+    SIGNAL Actualnext_pc : STD_LOGIC_VECTOR (31 DOWNTO 0);
     SIGNAL sel_freeze, sel_mem : STD_LOGIC;
     SIGNAL sel_mux8 : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL SIG_fetch_output : STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -34,16 +35,19 @@ BEGIN
         IF (falling_edge(clk)) THEN
             next_pc <= STD_LOGIC_VECTOR(to_unsigned(to_integer(unsigned(MUXOUT)) + 1, 32));
         END IF;
+        IF (sel_mux8="000") then
+            Actualnext_pc<=next_pc;
+        END IF;
     END PROCESS;
     fetch_output <= MUXOUT;
-    NextPC <= next_pc;
+    NextPC <= Actualnext_pc;
 
     sel_freeze <= sw_int OR swap OR hazard OR mem_in_use OR hlt;
     sel_mem <= pc_mem OR rst;
     sel_mux8 <= sel_br & sel_freeze & sel_mem;
     m1 : mux8 GENERIC MAP(
         n => 32) PORT MAP (
-        in0 => next_pc,
+        in0 => Actualnext_pc,
         in1 => MUXOUT,
         in2 => branch_address,
         in3 => memory_address,
