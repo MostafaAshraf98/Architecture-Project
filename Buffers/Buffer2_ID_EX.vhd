@@ -18,8 +18,16 @@ END ENTITY;
 
 ARCHITECTURE buf_arch OF buf IS
 BEGIN
+
     PROCESS (clk)
+    VARIABLE Enableflag: STD_LOGIC :='0';
     BEGIN
+
+        IF (falling_edge(clk) AND en='1' AND Enableflag='0') THEN 
+            Enableflag:='1';
+        ELSIF(falling_edge(clk) AND Enableflag='1') THEN
+            Enableflag:='0';
+        END IF;
         IF (falling_edge(clk)) THEN
             IF (flush = '1' OR rst = '1') THEN
                 OUTControlSignals <= (OTHERS => '0');
@@ -30,7 +38,8 @@ BEGIN
                 OUTRS1 <= (OTHERS => '0');
                 OUTRS2 <= (OTHERS => '0');
                 OUTRD <= (OTHERS => '0');
-            ELSIF (en = '0') THEN
+                
+            ELSIF (Enableflag = '0') THEN
                 OUTControlSignals <= INControlSignals;
                 OUTPC <= INPC;
                 OUTRD1 <= INRD1;

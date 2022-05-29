@@ -1,4 +1,3 @@
-vsim -gui work.integration
 # vsim -gui work.integration 
 # Start time: 00:43:33 on May 28,2022
 # Loading std.standard
@@ -47,7 +46,14 @@ force -freeze sim:/integration/inPort 16#FFFFF320 0
 run
 run
 run
-
+run
+run
+run
+run
+run
+run
+run
+run
 run
 
 
