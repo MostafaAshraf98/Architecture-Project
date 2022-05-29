@@ -129,7 +129,7 @@ BEGIN
         clk => clk,
         reset => rst,
         MemRead_EXCUTESTAGE => Buff2Sig_OUTControlSignals(8),
-        RD_EXCUTESTAGE => BUff2Sig_OUTRD,
+        RD_EXCUTESTAGE => ExecSig_outDestination,
         InputPC => Buff1Sig_pc_output,
         Instruction => Buff1Sig_inst_output,
         INPORTDATA => inPort,
