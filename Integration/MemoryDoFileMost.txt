@@ -37,3 +37,24 @@ force -freeze sim:/integration/rst 1 0
 run
 force -freeze sim:/integration/rst 0 0
 run
+force -freeze sim:/integration/inPort 16#00000019 0
+run
+force -freeze sim:/integration/inPort 16#FFFFFFFF 0
+run
+force -freeze sim:/integration/inPort 16#FFFFF320 0
+run
+force -freeze sim:/integration/inPort 16#00000010 0
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+
+
