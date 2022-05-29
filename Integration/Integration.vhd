@@ -51,7 +51,7 @@ ARCHITECTURE a_Integration OF Integration IS
     --OUT FROM BUFFER 1
     SIGNAL Buff1Sig_pc_output : STD_LOGIC_VECTOR (31 DOWNTO 0);
     SIGNAL Buff1Sig_inst_output : STD_LOGIC_VECTOR (31 DOWNTO 0);
-    SIGNAL Buff1Sig_OUTpropagatedreset: STD_LOGIC;
+    SIGNAL Buff1Sig_OUTpropagatedreset : STD_LOGIC;
 
     -- OUT FROM BUFFER 2
     SIGNAL Buff2Sig_OUTControlSignals : STD_LOGIC_VECTOR(24 DOWNTO 0);
@@ -114,14 +114,14 @@ BEGIN
     -- needs signals from excute buffer and decode buffer
     BUFF1_IF_ID : ENTITY work.Buffer1_IF_ID PORT MAP (
         clk => clk,
-        propagatedreset=>Buff4Sig_OUT_reset,
+        propagatedreset => Buff4Sig_OUT_reset,
         enb => B1enable,
         flush => FLUSH,
         pc_input => FetchSig_NextPC,
         inst_input => MemSig_readData,
         pc_output => Buff1Sig_pc_output,
         inst_output => Buff1Sig_inst_output,
-        OUTpropagatedreset=>Buff1Sig_OUTpropagatedreset
+        OUTpropagatedreset => Buff1Sig_OUTpropagatedreset
         );
 
     -------------------PORT MAPPING DECODE----------------------
@@ -163,7 +163,7 @@ BEGIN
         en => B2enable,
         flush => FLUSH,
         INPC => FetchSig_NextPC,
-        Preset=>Buff1Sig_OUTpropagatedreset,
+        Preset => Buff1Sig_OUTpropagatedreset,
         INControlSignals => DecodeSig_ControlSignals,
         INRD1 => DecodeSig_RD1,
         INRD2 => DecodeSig_RD2,
@@ -179,7 +179,7 @@ BEGIN
         OUTRS1 => Buff2Sig_OUTRS1,
         OUTRS2 => BUff2Sig_OUTRS2,
         OUTRD => BUff2Sig_OUTRD,
-        OUTPreset=>Buff2Sig_OUTPreset
+        OUTPreset => Buff2Sig_OUTPreset
         );
 
     -------------------PORT MAPPING EXEC----------------------
@@ -195,7 +195,7 @@ BEGIN
         RS2 => BUff2Sig_OUTRS2,
         RD => BUff2Sig_OUTRD,
         ControlSignals => Buff2Sig_OUTControlSignals,
-        INPreset=>Buff1Sig_OUTpropagatedreset,
+        INPreset => Buff1Sig_OUTpropagatedreset,
 
         -- IN From Other Stages (GLOBAL)
         dst_Mem => MemSig_out_Rs2_Rd,
@@ -289,7 +289,7 @@ BEGIN
         IN_Memory_Data => MemSig_readData,
         IN_MEM_RESET => MemSig_OUTReset,
         ----OUT To Write Back----
-        OUT_MEM_RESET=>Buff4Sig_OUT_reset,
+        OUT_MEM_RESET => Buff4Sig_OUT_reset,
         OUT_Rs2_RD_DATA => Buff4Sig_OUT_Rs2_RD_DATA,
         OUT_Control_SIGNAL => Buff4Sig_OUT_Control_SIGNAL,
         OUT_ALU_Value => Buff4Sig_OUT_ALU_Value,

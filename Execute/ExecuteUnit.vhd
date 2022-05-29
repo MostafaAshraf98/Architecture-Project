@@ -40,6 +40,7 @@ ARCHITECTURE a_Execute_Unit OF Execute_Unit IS
         PORT (
             clk : IN STD_LOGIC; -- Clock used for the Swap operation.
             rst : IN STD_LOGIC; -- Reset Signal.
+            Preset : IN STD_LOGIC;
             inA, inB : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- ALU inputs (The operands).
             ALUOp : IN STD_LOGIC_VECTOR(3 DOWNTO 0); -- Serves as a selector for the ALU operation.
             result : OUT STD_LOGIC_VECTOR(31 DOWNTO 0); -- The output of the ALU.
@@ -92,7 +93,7 @@ ARCHITECTURE a_Execute_Unit OF Execute_Unit IS
         PORT (
             flags_in : IN STD_LOGIC_VECTOR(2 DOWNTO 0); -- The input Flags to the CCR Register.
             clk : IN STD_LOGIC; -- Clock.
-            rst,Preset : IN STD_LOGIC; -- Rest Signal.
+            rst : IN STD_LOGIC; -- Rest Signal.
             flags_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) -- Output Flags From the CCR Register.
         );
     END COMPONENT;
@@ -138,6 +139,7 @@ BEGIN
     a : ALU PORT MAP(
         clk => clk,
         rst => rst,
+        Preset => INPreset,
         inA => mux4_op1_out,
         inB => mux2_op2_out,
         ALUOp => ControlSignals(17 DOWNTO 14),
@@ -175,7 +177,6 @@ BEGIN
         out1 => mux2_flags_out);
 
     c : CCR PORT MAP(
-        Preset=>INPreset,
         flags_in => mux2_flags_out,
         clk => clk,
         rst => rst,
