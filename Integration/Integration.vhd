@@ -100,7 +100,7 @@ BEGIN
         memory_address => WBSig_write_value,
         sel_br => MemSig_Sel_Branch,
         sw_int => Buff2Sig_OUTControlSignals(2),
-        swap => Buff2Sig_OUTControlSignals(3),
+        swap => Buff3Sig_OUT_ControlSignals(3),
         hazard => DecodeSig_HazardSignal,
         hlt => Buff2Sig_OUTControlSignals(4),
         mem_in_use => SelOR_mem_in_use,
@@ -159,7 +159,7 @@ BEGIN
     BUFF2_ID_EX : ENTITY work.buf PORT MAP (
         rst => rst,
         clk => clk,
-        Hazard=>DecodeSig_HazardSignal,
+        Hazard => DecodeSig_HazardSignal,
         en => B2enable,
         flush => FLUSH,
         INPC => FetchSig_NextPC,
