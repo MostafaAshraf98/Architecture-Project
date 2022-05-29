@@ -44,7 +44,7 @@ BEGIN
         ELSIF (falling_edge(clk) AND Flushflag = '1') THEN
             Flushflag := '0';
         END IF;
-        IF (falling_edge(clk) OR rising_edge(clk)) AND(rst = '1' OR Flushflag = '1' OR Enableflag = '1') THEN
+        IF (falling_edge(clk) OR rising_edge(clk)) AND(rst = '1' OR Flushflag = '1') THEN
             ------------OUTPUTS From Buffer To Memory Stage
             OUT_PC_Concatenated <= (OTHERS => '0');
             OUT_PC_Branching <= (OTHERS => '0');

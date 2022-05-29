@@ -92,9 +92,23 @@ ARCHITECTURE a_Memory_Unit OF Memory_Unit IS
     SIGNAL SP_Plus1 : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL carry_Inc_SP, carry_Dec_SP : STD_LOGIC := '0';
     SIGNAL SP_Minus1 : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL Flag_SWINT : STD_LOGIC := '0';
+    SIGNAL SP_Head_SWINT : STD_LOGIC := '0';
+    SIGNAL OUTSelectionMux : STD_LOGIC_VECTOR(0 DOWNTO 0);
+    SIGNAL firstIn, secondIn : STD_LOGIC_VECTOR(0 DOWNTO 0);
 
 BEGIN
-    addressSelector <= Interrupt & rst & Control_Signals(10);
+    PROCESS (clk) BEGIN
+        IF (rising_edge(clk)) THEN
+            IF (Control_Signals(2) = '1' AND Flag_SWINT = '0') THEN
+                Flag_SWINT <= '1';
+            ELSIF (Control_Signals(2) = '1' AND Flag_SWINT = '1') THEN
+                Flag_SWINT <= '0';
+            END IF;
+        END IF;
+    END PROCESS;
+
+    addressSelector <= Interrupt & rst & OUTSelectionMux(0);
     rstAddress(31 DOWNTO 0) <= X"00000000";
     interruptAddress(31 DOWNTO 0) <= X"00000001";
     -- stachPointerAddress(31 DOWNTO 0) <= X"22222222";
@@ -110,7 +124,7 @@ BEGIN
     sp1 : Stack_Pointer PORT MAP(
         clk => clk,
         rst => rst,
-        writeEnable => Control_Signals(10), -- we will edit the SP CS (SP/Heap) = 1
+        writeEnable => OUTSelectionMux(0), -- we will edit the SP CS (SP/Heap) = 1
         new_SP => newStackPointerVal,
         SP => stachPointerAddress
     );
@@ -121,6 +135,15 @@ BEGIN
         IN2 => PC_Concat,
         SEl => Control_Signals(6),
         OUT1 => writeDataOutValue);
+
+    firstIn(0) <= (Control_Signals(10));
+    secondIn(0) <= (Flag_SWINT);
+    m5 : mux2 GENERIC MAP(
+        1) PORT MAP(
+        IN1 => firstIn,
+        IN2 => secondIn,
+        SEl => Control_Signals(2),
+        OUT1 => OUTSelectionMux);
 
     m2 : mux8 GENERIC MAP(
         n => 32) PORT MAP (
@@ -133,7 +156,7 @@ BEGIN
         out1 => addressOutVal
 
     );
-    OUTReset<=rst;
+    OUTReset <= rst;
     Write_Data <= writeDataOutValue;
     Address <= addressOutVal;
     out_Control_Signals <= Control_Signals;
