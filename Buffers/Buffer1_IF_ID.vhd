@@ -4,11 +4,12 @@ USE ieee.std_logic_1164.ALL;
 ENTITY Buffer1_IF_ID IS
     PORT (
 
-        clk, enb, flush : IN STD_LOGIC;
+        clk, enb, flush,propagatedreset : IN STD_LOGIC;
         pc_input : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
         inst_input : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
         pc_output : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        inst_output : OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
+        inst_output : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+        OUTpropagatedreset : OUT STD_LOGIC
 
     );
 END ENTITY;
@@ -28,6 +29,7 @@ BEGIN
         IF (Enableflag = '0') THEN
             pc_output <= pc_input;
             inst_output <= inst_input;
+            OUTpropagatedreset <= propagatedreset;
 
         ELSIF flush = '1' THEN
             pc_output <= (OTHERS => '0');

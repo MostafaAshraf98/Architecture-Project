@@ -6,7 +6,7 @@ ENTITY Execute_Unit IS
     PORT (
         ---------------------In From Buffer------------------------------------------------
         clk : IN STD_LOGIC; -- Clock used for the swapping.
-        rst : IN STD_LOGIC; -- Reset Signal.
+        rst, INPreset : IN STD_LOGIC; -- Reset Signal and propagated reset to reset CCR.
         PC : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- Program Counter.
         RD1, RD2, Imm : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- Read Data 1, Read Data 2, Immediate.
         RS1, RS2, RD : IN STD_LOGIC_VECTOR(2 DOWNTO 0); -- Register Source 1, Register Source 2, Register Destination.
@@ -92,7 +92,7 @@ ARCHITECTURE a_Execute_Unit OF Execute_Unit IS
         PORT (
             flags_in : IN STD_LOGIC_VECTOR(2 DOWNTO 0); -- The input Flags to the CCR Register.
             clk : IN STD_LOGIC; -- Clock.
-            rst : IN STD_LOGIC; -- Rest Signal.
+            rst,Preset : IN STD_LOGIC; -- Rest Signal.
             flags_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) -- Output Flags From the CCR Register.
         );
     END COMPONENT;
@@ -175,6 +175,7 @@ BEGIN
         out1 => mux2_flags_out);
 
     c : CCR PORT MAP(
+        Preset=>INPreset,
         flags_in => mux2_flags_out,
         clk => clk,
         rst => rst,

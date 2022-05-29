@@ -4,11 +4,12 @@ USE ieee.std_logic_1164.ALL;
 ENTITY buf IS
 
     PORT (
-        rst, clk, en, flush : IN STD_LOGIC;
+        rst, clk, en, flush, Preset : IN STD_LOGIC;
         INPC : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         INControlSignals : IN STD_LOGIC_VECTOR(24 DOWNTO 0);
         INRD1, INRD2, INImmValue : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         INRS1, INRS2, INRD : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        OUTPreset: OUT STD_LOGIC;
         OUTControlSignals : OUT STD_LOGIC_VECTOR(24 DOWNTO 0);
         OUTPC : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         OUTRD1, OUTRD2, OUTImmValue : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -48,6 +49,7 @@ BEGIN
                 OUTRS1 <= INRS1;
                 OUTRS2 <= INRS2;
                 OUTRD <= INRD;
+                OUTPreset<=Preset;
             END IF;
         END IF;
     END PROCESS;
