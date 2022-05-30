@@ -117,6 +117,7 @@ BEGIN
         clk => clk,
         propagatedreset => Buff4Sig_OUT_reset,
         enb => B1enable,
+	HWInt=>HWInt,
         flush => FLUSH,
         pc_input => FetchSig_NextPC,
         inst_input => MemSig_readData,
