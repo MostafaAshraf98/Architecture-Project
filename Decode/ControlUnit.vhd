@@ -234,6 +234,7 @@ ELSIF opCode="110001" then
 	HLT<='1';
 ELSIF opCode="110010" then
 	HWINT<='1';
+	SWInt<='1';
 
 END IF;
 end process;
