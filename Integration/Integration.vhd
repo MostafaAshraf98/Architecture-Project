@@ -44,8 +44,6 @@ ARCHITECTURE a_Integration OF Integration IS
     SIGNAL MemSig_Address : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL MemSig_Write_Data : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL MemSig_OUTReset : STD_LOGIC;
-    SIGNAL MemSig_out_MEMRead : STD_LOGIC;
-    SIGNAL MemSig_out_MEMWrite : STD_LOGIC;
 
     -- OUT SIGNALS FROM WB
     SIGNAL WBSig_write_value : STD_LOGIC_VECTOR (31 DOWNTO 0);
@@ -100,6 +98,7 @@ BEGIN
         clk => clk,
         branch_address => Buff3Sig_OUT_PC_Branching,
         memory_address => WBSig_write_value,
+        RTI=>Buff4Sig_OUT_Control_SIGNAL(1),
         sel_br => MemSig_Sel_Branch,
         sw_int => Buff4Sig_OUT_Control_SIGNAL(2),
         swap => Buff3Sig_OUT_ControlSignals(3),
@@ -161,7 +160,7 @@ BEGIN
     BUFF2_ID_EX : ENTITY work.buf PORT MAP (
         rst => rst,
         clk => clk,
-        Hazard => DecodeSig_HazardSignal,
+        Hazard=>DecodeSig_HazardSignal,
         en => B2enable,
         flush => FLUSH,
         INPC => FetchSig_NextPC,
@@ -268,8 +267,6 @@ BEGIN
         Sel_Branch => MemSig_Sel_Branch,
         out_ALU_Heap_Value => MemSig_out_ALU_Heap_Value,
         out_PC_Branch => MemSig_out_PC_Branch,
-        out_MEMWrite => MemSig_out_MEMWrite,
-        out_MEMRead => MemSig_out_MEMRead,
 
         -- OUT to MEM/WB
         OUTReset => MemSig_OUTReset,
@@ -327,7 +324,7 @@ BEGIN
     -- The memory Itself (RAM)
     mem : ENTITY work.Memory PORT MAP (
         clk => clk,
-        writeEnable => Buff3Sig_OUT_ControlSignals(9),
+        writeEnable => MemSig_out_Control_Signals(9),
         readEnable => Sig_ReadEnable,
         address => MemSig_readAddress,
         writeData => MemSig_Write_Data,
@@ -336,8 +333,8 @@ BEGIN
     ------------------------------------------OTHER GATES AND CONNECTIONS----------------------------------------------------
     SelOR_mem_in_use <= SigOR1_Mem OR Buff3Sig_OUT_ControlSignals(9);
 
-    SigOR1_Mem <= MemSig_out_MEMRead OR Buff3Sig_OUT_ControlSignals(24) OR rst;
-    SigOR2_Mem <= MemSig_out_MEMRead OR MemSig_out_MEMWrite;
+    SigOR1_Mem <= MemSig_out_Control_Signals(8) OR Buff3Sig_OUT_ControlSignals(24) OR rst;
+    SigOR2_Mem <= MemSig_out_Control_Signals(8) OR MemSig_out_Control_Signals(9);
     Sig_ReadEnable <= SigOR1_Mem OR SigOr_Mux_Fetch(0);
     FLUSH <= Buff4Sig_OUT_Control_SIGNAL(0) OR MemSig_Sel_Branch;
     B1enable <= (rst AND Buff2Sig_OUTControlSignals(4)) OR ExecSig_outSwapSig OR DecodeSig_HazardSignal OR Buff3Sig_OUT_ControlSignals(2);

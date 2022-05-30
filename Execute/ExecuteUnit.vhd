@@ -202,7 +202,8 @@ BEGIN
     pc_con(22 DOWNTO 20) <= CCR_out;
     PC_Concatenated <= pc_con;
 
-    PC_Branching <= STD_LOGIC_VECTOR(signed(PC) + signed(Imm(29 DOWNTO 0) & "00"));
+    -- PC_Branching <= STD_LOGIC_VECTOR(signed(PC) + signed(Imm(29 DOWNTO 0) & "00"));
+    PC_Branching <= Imm;
 
     outControlSignals <= ControlSignals;
     outJumpCondition <= mux4_jumpCond_out(0);

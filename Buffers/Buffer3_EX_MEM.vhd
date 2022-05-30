@@ -28,23 +28,20 @@ END ENTITY;
 
 ARCHITECTURE a_Buffer3_IF_ID OF Buffer3_EX_MEM IS
 BEGIN
-
+    PROCESS (clk)
+    BEGIN 
+    
+    END PROCESS;
     PROCESS (rst, clk)
-        VARIABLE Enableflag : STD_LOGIC := '0';
-        VARIABLE Flushflag : STD_LOGIC := '0';
+    VARIABLE Enableflag: STD_LOGIC :='0';
     BEGIN
-        IF (falling_edge(clk) AND disable = '1' AND Enableflag = '0') THEN
-            Enableflag := '1';
-        ELSIF (falling_edge(clk) AND Enableflag = '1') THEN
-            Enableflag := '0';
-        END IF;
-
-        IF (falling_edge(clk) AND flush = '1' AND Flushflag = '0') THEN
-            Flushflag := '1';
-        ELSIF (falling_edge(clk) AND Flushflag = '1') THEN
-            Flushflag := '0';
-        END IF;
-        IF (falling_edge(clk) OR rising_edge(clk)) AND(rst = '1' OR Flushflag = '1') THEN
+    IF (falling_edge(clk) AND disable='1' AND Enableflag='0') THEN 
+        Enableflag:='1';
+    ELSIF(falling_edge(clk) AND Enableflag='1') THEN
+        Enableflag:='0';
+    END IF;
+	IF(falling_edge(clk)) THEN
+        IF (rst = '1' OR flush = '1') THEN
             ------------OUTPUTS From Buffer To Memory Stage
             OUT_PC_Concatenated <= (OTHERS => '0');
             OUT_PC_Branching <= (OTHERS => '0');
@@ -53,7 +50,7 @@ BEGIN
             OUT_ALUResult <= (OTHERS => '0');
             OUT_RD2 <= (OTHERS => '0');
             OUT_Destination <= (OTHERS => '0');
-        ELSIF ((falling_edge(clk)) AND Enableflag = '0') THEN
+        ELSIF (Enableflag = '0') THEN
             OUT_PC_Concatenated <= IN_PC_Concatenated;
             OUT_PC_Branching <= IN_PC_Branching;
             OUT_ControlSignals <= IN_ControlSignals;
@@ -62,6 +59,7 @@ BEGIN
             OUT_RD2 <= IN_RD2;
             OUT_Destination <= IN_Destination;
         END IF;
+	END IF;
     END PROCESS;
 
 END ARCHITECTURE;
