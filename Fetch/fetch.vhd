@@ -28,6 +28,7 @@ ARCHITECTURE arch_fetch OF Fetch IS
     SIGNAL sel_mux8 : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL SIG_fetch_output : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL MUXOUT : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL MemTemp : STD_LOGIC_VECTOR (31 DOWNTO 0);
 BEGIN
 
     PROCESS (clk)
@@ -41,7 +42,7 @@ BEGIN
     END PROCESS;
     fetch_output <= MUXOUT;
     NextPC <= Actualnext_pc;
-
+            MemTemp<=x"000" & memory_address(19 DOWNTO 0);
     sel_freeze <= swap OR hazard OR mem_in_use OR hlt;
     sel_mem <= pc_mem OR rst OR sw_int OR RTI;
     sel_mux8 <= sel_br & sel_freeze & sel_mem;
@@ -50,7 +51,7 @@ BEGIN
         in0 => Actualnext_pc,
         in1 => MUXOUT,
         in2 => branch_address,
-        in3 => memory_address,
+        in3 => MemTemp,
         in4 => (OTHERS => '0'),
         sel => sel_mux8,
         out1 => MUXOUT);

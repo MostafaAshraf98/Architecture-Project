@@ -38,7 +38,9 @@ IN R2     #R2=50
 IN R3     #R3=100
 IN R4     #R4=300
 PUSH R4   #SP=FFFFFFFE, M[FFFFFFFF]=300
-JMP 30 
+CALL 300  #SP=FFFFFFFE, M[FFFFFFFF]=next PC
+#INT 1     #SP=FFFFFFFD, M[FFFFFFFE]=next PC
+#JMP 30 
 INC R1	  #this statement shouldn't be executed
 
 
@@ -50,12 +52,12 @@ SETC        # this statement shouldn't be executed, C-->1
 
 #check on flag updated on jump
 .ORG 50
-#JZ 30      #shouldn't be taken
-#JC 100      #Jump Not taken
+JZ 30      #shouldn't be taken
+JC 100      #Jump Not taken
 
 #check destination forwarding
 NOT R5     #R5=FFFF, Z= 0, C--> not change, N=1
-#INT 0      #SP=FFFFFFFD, M[FFFFFFFE]=next PmodeC
+INT 0      #SP=FFFFFFFD, M[FFFFFFFE]=next PC
 IN  R6     #R6=700, flag no change
 JN  700    #jump taken, N = 0
 INC R1     # this statement shouldn't be executed
@@ -65,7 +67,6 @@ INC R1     # this statement shouldn't be executed
 .ORG 700
 SETC      #C-->1
 POP R6    #R6=300, SP=FFFFFFFF, try hardware interrupt here
-CALL 300  #SP=FFFFFFFE, M[FFFFFFFF]=next PC
 INC R6	  #R6=401, this statement shouldn't be executed till call returns, C--> 0, N-->0,Z-->0
 NOP
 NOP
