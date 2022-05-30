@@ -132,7 +132,7 @@ BEGIN
     sp1 : Stack_Pointer PORT MAP(
         clk => clk,
         rst => rst,
-        writeEnable => Control_Signals(10), -- we will edit the SP CS (SP/Heap) = 1
+        writeEnable => ST_HP, -- we will edit the SP CS (SP/Heap) = 1
         new_SP => newStackPointerVal,
         SP => stachPointerAddress
     );
