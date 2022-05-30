@@ -21,8 +21,6 @@ ENTITY Memory_Unit IS
         Sel_Branch : OUT STD_LOGIC; -- Select Branch to Fetcher
         out_ALU_Heap_Value : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         out_PC_Branch : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        out_MEMRead : OUT STD_LOGIC; -- Select Read from Memory
-        out_MEMWrite : OUT STD_LOGIC; -- Select Write from Memory
 
         -- OUT to MEM/WB
         OUTReset : OUT STD_LOGIC; -- we propagate the reset to fetch
@@ -94,51 +92,47 @@ ARCHITECTURE a_Memory_Unit OF Memory_Unit IS
     SIGNAL SP_Plus1 : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL carry_Inc_SP, carry_Dec_SP : STD_LOGIC := '0';
     SIGNAL SP_Minus1 : STD_LOGIC_VECTOR(31 DOWNTO 0);
-
-    SIGNAL Flag_stack_heap : STD_LOGIC := '0';
-    SIGNAL A_OUTSelectionMux : STD_LOGIC_VECTOR(0 DOWNTO 0);
-    SIGNAL A_firstIn, A_secondIn : STD_LOGIC_VECTOR(0 DOWNTO 0);
-
-    SIGNAL Flag_MEMRead : STD_LOGIC := '0';
-    SIGNAL B_OUTSelectionMux : STD_LOGIC_VECTOR(0 DOWNTO 0);
-    SIGNAL B_firstIn, B_secondIn : STD_LOGIC_VECTOR(0 DOWNTO 0);
-
-    SIGNAL Flag_MEMWrite : STD_LOGIC := '0';
-    SIGNAL C_OUTSelectionMux : STD_LOGIC_VECTOR(0 DOWNTO 0);
-    SIGNAL C_firstIn, C_secondIn : STD_LOGIC_VECTOR(0 DOWNTO 0);
+    SIGNAL COUNT: STD_LOGIC_VECTOR(2 downTO 1);
+    SIGNAL ST_HP: STD_LOGIC;
 
 BEGIN
-    PROCESS (clk) BEGIN
-        IF (rising_edge(clk)) THEN
-            IF (Control_Signals(2) = '1' AND Flag_stack_heap = '0') THEN
-                Flag_stack_heap <= '1';
-                Flag_MEMRead <= '0';
-                Flag_MEMWrite <= '1';
-            ELSIF (Control_Signals(2) = '1' AND Flag_stack_heap = '1') THEN
-                Flag_stack_heap <= '0';
-                Flag_MEMRead <= '1';
-                Flag_MEMWrite <= '0';
-            END IF;
-        END IF;
-    END PROCESS;
-
-    addressSelector <= Interrupt & rst & A_OUTSelectionMux(0);
+    
     rstAddress(31 DOWNTO 0) <= X"00000000";
     interruptAddress(31 DOWNTO 0) <= X"00000001";
     -- stachPointerAddress(31 DOWNTO 0) <= X"22222222";
-
+    PROCESS(clk,rst) IS
+		Variable C:INTEGER;
+			BEGIN
+				IF rst='1' THEN
+					C:=0;
+				ELSIF rising_edge(clk) THEN  
+					IF Control_Signals(2) = '1' THEN
+						C:=C+1;
+                    END IF;
+                END IF;
+                If (Control_Signals(2) = '1' AND C=2) then
+                    out_Control_Signals(10 DOWNTO 7)<="0011";
+                    addressSelector <= Interrupt & rst & '0';
+                    C:=0;
+                    ST_HP<='0';
+                ELSE 
+                out_Control_Signals(10 DOWNTO 7)<=Control_Signals(10 DOWNTO 7);
+                addressSelector <= Interrupt & rst & Control_Signals(10);
+                ST_HP<=Control_Signals(10);
+                END IF;
+		END PROCESS;
     a1 : my_nadder GENERIC MAP(32) PORT MAP(stachPointerAddress, (OTHERS => '0'), '1', SP_Plus1, carry_Inc_SP);
     a2 : my_nadder GENERIC MAP(32) PORT MAP(stachPointerAddress, (OTHERS => '1'), '0', SP_Minus1, carry_Dec_SP);
 
-    newStackPointerVal <= SP_Plus1 WHEN(B_OUTSelectionMux(0) = '1') --increment SP when Memory read aka pop
+    newStackPointerVal <= SP_Plus1 WHEN(Control_Signals(8) = '1') --increment SP when Memory read aka pop
         ELSE
-        SP_Minus1 WHEN(C_OUTSelectionMux(0) = '1');--increment SP when Memory write aka push
+        SP_Minus1 WHEN(Control_Signals(9) = '1');--increment SP when Memory write aka push
 
     -- Set the SP value
     sp1 : Stack_Pointer PORT MAP(
         clk => clk,
         rst => rst,
-        writeEnable => A_OUTSelectionMux(0), -- we will edit the SP CS (SP/Heap) = 1
+        writeEnable => Control_Signals(10), -- we will edit the SP CS (SP/Heap) = 1
         new_SP => newStackPointerVal,
         SP => stachPointerAddress
     );
@@ -149,33 +143,6 @@ BEGIN
         IN2 => PC_Concat,
         SEl => Control_Signals(6),
         OUT1 => writeDataOutValue);
-
-    A_firstIn(0) <= (Control_Signals(10));
-    A_secondIn(0) <= (Flag_stack_heap);
-    m5 : mux2 GENERIC MAP(
-        1) PORT MAP(
-        IN1 => A_firstIn,
-        IN2 => A_secondIn,
-        SEl => Control_Signals(2),
-        OUT1 => A_OUTSelectionMux);
-
-    B_firstIn(0) <= (Control_Signals(8));
-    B_secondIn(0) <= (Flag_MEMRead);
-    m6 : mux2 GENERIC MAP(
-        1) PORT MAP(
-        IN1 => B_firstIn,
-        IN2 => B_secondIn,
-        SEl => Control_Signals(2),
-        OUT1 => B_OUTSelectionMux);
-
-    C_firstIn(0) <= (Control_Signals(9));
-    C_secondIn(0) <= (Flag_MEMWrite);
-    m7 : mux2 GENERIC MAP(
-        1) PORT MAP(
-        IN1 => C_firstIn,
-        IN2 => C_secondIn,
-        SEl => Control_Signals(2),
-        OUT1 => C_OUTSelectionMux);
 
     m2 : mux8 GENERIC MAP(
         n => 32) PORT MAP (
@@ -188,15 +155,13 @@ BEGIN
         out1 => addressOutVal
 
     );
-    OUTReset <= rst;
+    OUTReset<=rst;
     Write_Data <= writeDataOutValue;
     Address <= addressOutVal;
-    out_Control_Signals <= Control_Signals;
+    out_Control_Signals(24 DOWNTO 11) <= Control_Signals(24 DOWNTO 11);
+    out_Control_Signals(6 DOWNTO 0) <= Control_Signals(6 DOWNTO 0);
     out_Rs2_Rd <= Rs2_Rd;
     out_ALU_Heap_Value <= ALU_Heap_Value;
     out_PC_Branch <= PC_Branch;
     Sel_Branch <= in_Jump_Condition AND Control_Signals(11); -- pass the Selector for Branch by anding the Branch Signal with the jump condition
-
-    out_MEMRead <= B_OUTSelectionMux(0);
-    out_MEMWrite <= C_OUTSelectionMux(0);
 END ARCHITECTURE;

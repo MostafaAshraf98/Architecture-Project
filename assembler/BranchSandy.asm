@@ -38,7 +38,6 @@ IN R2     #R2=50
 IN R3     #R3=100
 IN R4     #R4=300
 PUSH R4   #SP=FFFFFFFE, M[FFFFFFFF]=300
-INT 1     #SP=FFFFFFFD, M[FFFFFFFE]=next PC
 JMP 30 
 INC R1	  #this statement shouldn't be executed
 
