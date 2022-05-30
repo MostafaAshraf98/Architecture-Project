@@ -117,30 +117,27 @@ BEGIN
     PROCESS (clk)
     BEGIN
         IF (rising_edge(clk)) THEN
-            IF (mux4_jumpCond_out(0) = '1' AND ControlSignals(11) = '1') THEN
-                IF (ControlSignals(13 DOWNTO 12) = "00" AND BN = '0') THEN
+                IF (mux4_jumpCond_out(0) = '1' AND ControlSignals(11) = '1' AND ControlSignals(13 DOWNTO 12) = "00" AND BN = '0') THEN
                     BN <= '1';
                     flagsToCCR <= ALU_Flags;
-                ELSIF (ControlSignals(13 DOWNTO 12) = "00" AND BN = '1') THEN
+                ELSIF ( BN = '1') THEN
                     BN <= '0';
                     flagsToCCR <= ALU_Flags(2) & '0' & ALU_Flags(0);
-                ELSIF (ControlSignals(13 DOWNTO 12) = "01" AND BZ = '0') THEN
+                ELSIF (mux4_jumpCond_out(0) = '1' AND ControlSignals(11) = '1' AND ControlSignals(13 DOWNTO 12) = "01" AND BZ = '0') THEN
                     BZ <= '1';
                     flagsToCCR <= ALU_Flags;
-                ELSIF (ControlSignals(13 DOWNTO 12) = "01" AND BZ = '1') THEN
+                ELSIF (BZ = '1') THEN
                     BZ <= '0';
                     flagsToCCR <= ALU_Flags(2) & ALU_Flags(1) & '0';
-                ELSIF (ControlSignals(13 DOWNTO 12) = "10" AND BC = '0') THEN
+                ELSIF (mux4_jumpCond_out(0) = '1' AND ControlSignals(11) = '1' AND ControlSignals(13 DOWNTO 12) = "10" AND BC = '0') THEN
                     BC <= '1';
                     flagsToCCR <= ALU_Flags;
-                ELSIF (ControlSignals(13 DOWNTO 12) = "10" AND BC = '1') THEN
+                ELSIF ( BC = '1') THEN
                     BC <= '0';
                     flagsToCCR <= '0' & ALU_Flags(1) & ALU_Flags(0);
-                END IF;
-            ELSE
+                ELSE
                 flagsToCCR <= ALU_Flags;
-            END IF;
-
+                END IF;
         END IF;
     END PROCESS;
 
