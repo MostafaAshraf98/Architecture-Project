@@ -50,12 +50,12 @@ SETC        # this statement shouldn't be executed, C-->1
 
 #check on flag updated on jump
 .ORG 50
-JZ 30      #shouldn't be taken
-JC 100      #Jump Not taken
+#JZ 30      #shouldn't be taken
+#JC 100      #Jump Not taken
 
 #check destination forwarding
 NOT R5     #R5=FFFF, Z= 0, C--> not change, N=1
-INT 0      #SP=FFFFFFFD, M[FFFFFFFE]=next PC
+#INT 0      #SP=FFFFFFFD, M[FFFFFFFE]=next PmodeC
 IN  R6     #R6=700, flag no change
 JN  700    #jump taken, N = 0
 INC R1     # this statement shouldn't be executed

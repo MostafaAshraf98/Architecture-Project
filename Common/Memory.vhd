@@ -29,7 +29,7 @@ BEGIN
 
     ----readData <= memory_data(to_integer(unsigned(address))) WHEN readEnable = '1' AND to_integer(unsigned(address))<= 1048575 ELSE
     ---    (OTHERS => 'Z');
-	readData <= (OTHERS => 'Z') WHEN to_integer(unsigned(address))> 1048575 
+	readData <= (OTHERS => 'Z') WHEN to_integer(unsigned(address))> 1048575 OR to_integer(signed(address))<0
 	ELSE memory_data(to_integer(unsigned(address))) WHEN readEnable = '1'
 	ELSE (OTHERS => 'Z');
 
