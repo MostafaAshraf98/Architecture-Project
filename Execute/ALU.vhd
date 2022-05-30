@@ -7,6 +7,9 @@ ENTITY ALU IS
         clk : IN STD_LOGIC; -- Clock used for the Swap operation.
         rst, Preset : IN STD_LOGIC; -- Reset Signal.
         inA, inB : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- ALU inputs (The operands).
+        junpConditionResult : IN STD_LOGIC;
+        branchSig : IN STD_LOGIC;
+        jumpConditionSig : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
         ALUOp : IN STD_LOGIC_VECTOR(3 DOWNTO 0); -- Serves as a selector for the ALU operation.
         result : OUT STD_LOGIC_VECTOR(31 DOWNTO 0); -- The output of the ALU.
         flags_Out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) -- The output flags.
@@ -87,7 +90,9 @@ BEGIN
 
     -- Zero Flag
     -- Zero Flag do not change if the operation is: Pass InA, Pass InB, SetCarry, Swap.
-    flags_Sig(0) <= flags_Sig(0) WHEN (ALUOp = "0000" OR ALUOp = "1010" OR ALUOp = "1001" OR ALUOp = "0001")
+    flags_Sig(0) <= '0' WHEN (junpConditionResult = '1' AND jumpConditionSig = "00" AND branchSig = '1')
+ELSE
+    flags_Sig(0) WHEN (ALUOp = "0000" OR ALUOp = "1010" OR ALUOp = "1001" OR ALUOp = "0001")
 ELSE
     '1' WHEN (signed(result_Sig) = 0)
 ELSE
@@ -95,7 +100,9 @@ ELSE
 
     -- Negative Flag
     -- Negative Flag do not change if the operation is: Pass InA, Pass InB, SetCarry, Swap.
-    flags_Sig(1) <= flags_Sig(1) WHEN (ALUOp = "0000" OR ALUOp = "1010" OR ALUOp = "1001" OR ALUOp = "0001")
+    flags_Sig(1) <= '0' WHEN (junpConditionResult = '1' AND jumpConditionSig = "01" AND branchSig = '1')
+ELSE
+    flags_Sig(1) WHEN (ALUOp = "0000" OR ALUOp = "1010" OR ALUOp = "1001" OR ALUOp = "0001")
 ELSE
     '1' WHEN (signed(result_Sig) < 0)
 ELSE
@@ -103,7 +110,10 @@ ELSE
 
     -- Carry flag
     -- Carry flag does not change if the operation is PassA, PassB, swap and =0 when   Not, And.
-    flags_Sig(2) <= flags_Sig(2) WHEN (ALUOp = "0000" OR ALUOp = "1010" OR ALUOp = "1001" OR ALUOp = "0111" OR ALUOp = "0011" OR Preset = '1')
+    flags_Sig(2) <= '0' WHEN (junpConditionResult = '1' AND jumpConditionSig = "10" AND branchSig = '1')
+
+ELSE
+    flags_Sig(2) WHEN (ALUOp = "0000" OR ALUOp = "1010" OR ALUOp = "1001" OR ALUOp = "0111" OR ALUOp = "0011" OR Preset = '1')
 ELSE
     '1' WHEN ALUOp = "0001" -- Set Carry operation.
 ELSE

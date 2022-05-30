@@ -42,6 +42,9 @@ ARCHITECTURE a_Execute_Unit OF Execute_Unit IS
             rst : IN STD_LOGIC; -- Reset Signal.
             Preset : IN STD_LOGIC;
             inA, inB : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- ALU inputs (The operands).
+            junpConditionResult : IN STD_LOGIC;
+            branchSig : IN STD_LOGIC;
+            jumpConditionSig : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
             ALUOp : IN STD_LOGIC_VECTOR(3 DOWNTO 0); -- Serves as a selector for the ALU operation.
             result : OUT STD_LOGIC_VECTOR(31 DOWNTO 0); -- The output of the ALU.
             flags_Out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) -- The output flags.
@@ -142,10 +145,14 @@ BEGIN
         Preset => INPreset,
         inA => mux4_op1_out,
         inB => mux2_op2_out,
+        junpConditionResult => mux4_jumpCond_out(0),
+        branchSig => ControlSignals(11),
+        jumpConditionSig => ControlSignals(13 DOWNTO 12),
         ALUOp => ControlSignals(17 DOWNTO 14),
         result => ALU_Result,
         flags_Out => ALU_Flags
     );
+
     f : ForwardingUnit PORT MAP(
         RS1 => RS1,
         RS2 => RS2,
