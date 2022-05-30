@@ -42,9 +42,6 @@ ARCHITECTURE a_Execute_Unit OF Execute_Unit IS
             rst : IN STD_LOGIC; -- Reset Signal.
             Preset : IN STD_LOGIC;
             inA, inB : IN STD_LOGIC_VECTOR(31 DOWNTO 0); -- ALU inputs (The operands).
-            junpConditionResult : IN STD_LOGIC;
-            branchSig : IN STD_LOGIC;
-            jumpConditionSig : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
             ALUOp : IN STD_LOGIC_VECTOR(3 DOWNTO 0); -- Serves as a selector for the ALU operation.
             result : OUT STD_LOGIC_VECTOR(31 DOWNTO 0); -- The output of the ALU.
             flags_Out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) -- The output flags.
@@ -112,7 +109,40 @@ ARCHITECTURE a_Execute_Unit OF Execute_Unit IS
     SIGNAL mux4_jumpCond_out : STD_LOGIC_VECTOR(0 DOWNTO 0);
     SIGNAL tristate_out : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL pc_con : STD_LOGIC_VECTOR (31 DOWNTO 0) := X"00000000";
+
+    SIGNAL BC, BN, BZ : STD_LOGIC := '0';
+    SIGNAL flagsToCCR : STD_LOGIC_VECTOR(2 DOWNTO 0);
 BEGIN
+
+    PROCESS (clk)
+    BEGIN
+        IF (rising_edge(clk)) THEN
+            IF (mux4_jumpCond_out(0) = '1' AND ControlSignals(11) = '1') THEN
+                IF (ControlSignals(13 DOWNTO 12) = "00" AND BN = '0') THEN
+                    BN <= '1';
+                    flagsToCCR <= ALU_Flags;
+                ELSIF (ControlSignals(13 DOWNTO 12) = "00" AND BN = '1') THEN
+                    BN <= '0';
+                    flagsToCCR <= ALU_Flags(2) & '0' & ALU_Flags(0);
+                ELSIF (ControlSignals(13 DOWNTO 12) = "01" AND BZ = '0') THEN
+                    BZ <= '1';
+                    flagsToCCR <= ALU_Flags;
+                ELSIF (ControlSignals(13 DOWNTO 12) = "01" AND BZ = '1') THEN
+                    BZ <= '0';
+                    flagsToCCR <= ALU_Flags(2) & ALU_Flags(1) & '0';
+                ELSIF (ControlSignals(13 DOWNTO 12) = "10" AND BC = '0') THEN
+                    BC <= '1';
+                    flagsToCCR <= ALU_Flags;
+                ELSIF (ControlSignals(13 DOWNTO 12) = "10" AND BC = '1') THEN
+                    BC <= '0';
+                    flagsToCCR <= '0' & ALU_Flags(1) & ALU_Flags(0);
+                END IF;
+            ELSE
+                flagsToCCR <= ALU_Flags;
+            END IF;
+
+        END IF;
+    END PROCESS;
 
     m1 : mux4 GENERIC MAP(
         n => 32) PORT MAP (
@@ -145,9 +175,6 @@ BEGIN
         Preset => INPreset,
         inA => mux4_op1_out,
         inB => mux2_op2_out,
-        junpConditionResult => mux4_jumpCond_out(0),
-        branchSig => ControlSignals(11),
-        jumpConditionSig => ControlSignals(13 DOWNTO 12),
         ALUOp => ControlSignals(17 DOWNTO 14),
         result => ALU_Result,
         flags_Out => ALU_Flags
@@ -178,7 +205,7 @@ BEGIN
 
     m4 : mux2 GENERIC MAP(
         n => 3) PORT MAP (
-        IN1 => ALU_Flags,
+        IN1 => flagsToCCR,
         IN2 => prevFlags,
         sel => RTISignal,
         out1 => mux2_flags_out);
