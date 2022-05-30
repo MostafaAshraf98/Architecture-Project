@@ -100,7 +100,7 @@ BEGIN
     rstAddress(31 DOWNTO 0) <= X"00000000";
     interruptAddress(31 DOWNTO 0) <= X"00000001";
     -- stachPointerAddress(31 DOWNTO 0) <= X"22222222";
-    PROCESS(clk,rst) IS
+    PROCESS(clk,Control_Signals) IS
 		Variable C:INTEGER;
 			BEGIN
 				IF rst='1' THEN
